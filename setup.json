@@ -1,0 +1,31 @@
+{
+	"logLevel": 2,
+	"compressImages": true,
+	"screenshotsFolder": "screenshots",
+	"pages": "pages.json",
+	"puppeteer": {
+		"launch": {
+			"headless": true
+		},
+		"emulate": [
+			{
+				"name": "Chrome 1280",
+				"userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36",
+				"viewport": {
+					"width": 1280,
+					"height": 780
+				}
+			},
+			{
+				"name": "Chrome 1024",
+				"userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36",
+				"viewport": {
+					"width": 1024,
+					"height": 768
+				}
+			}
+		]
+
+ 
+	}	
+}

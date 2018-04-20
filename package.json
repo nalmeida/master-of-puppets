@@ -1,0 +1,18 @@
+{
+  "name": "master-of-puppets",
+  "version": "1.0.0",
+  "description": "",
+  "main": "screenshot.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "filenamify": "^2.0.0",
+    "imagemin": "^5.3.1",
+    "imagemin-pngquant": "^5.1.0",
+    "puppeteer": "^1.3.0"
+  }
+}

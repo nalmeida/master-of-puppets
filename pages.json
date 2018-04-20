@@ -1,0 +1,11 @@
+{
+	"domain": "https://www.toyota.com.br",
+	"pages": [
+		{ "url": "/", "click": ["#warning-toyota-ok"]},
+		{ "url": "/?2cliques", "click": ["#warning-toyota-ok", "#toyota-header > nav > ul > li:nth-child(1) > a"]},
+		{ "url": "/modelos/etios-hatch/"},
+		{ "url": "/modelos/etios-hatch/comparativo/"},
+		{ "url": "/modelos/etios-hatch/monte/?"},
+		{ "url": "/modelos/etios-hatch/monte/?mdl=1,0,0,0,0,0,0,1"}
+	]
+}
