@@ -19,14 +19,17 @@ const util = require('./util.js');
 var setup;
 var pages;
 var compressImages;
+var logLevel;
 
 var init = function(commandLineObject){
 
-	util.logLevel = !isNaN(commandLineObject.loglevel) ? commandLineObject.loglevel : 1;
+	util.logLevel = logLevel = !isNaN(commandLineObject.loglevel) ? commandLineObject.loglevel : 0;
 	setup = readJSON('setup.json');
 		compressImages = setup.compressImages;
 	pages = readJSON(setup.pages);
-	// banner('Starting Screenshot');
+	if(logLevel == 2) {
+		banner('Starting Screenshot');
+	}
 	mkdir(setup.screenshotsFolder);
 
 	captureScreenshots();
@@ -39,7 +42,9 @@ const captureScreenshots = async () => {
 	var screenshotsFolder = setup.screenshotsFolder + '/' + timeStamp();
 	
 	mkdir(screenshotsFolder);
-	// log('Creating "' + screenshotsFolder + '" folder\n');
+	if(logLevel == 2) {
+		log('Creating "' + screenshotsFolder + '" folder\n');
+	}
 
 	var urlsToTest = pages.pages;
 	var lineCount = 0;
@@ -57,15 +62,18 @@ const captureScreenshots = async () => {
 
 			lineCount++;
 
-			var now = util.time();
+			var now = (util.logLevel == 1 ? '\t': '') + util.time();
 			var fileName = i + '_' + filenamify(slug);
 			var deviceFolder = screenshotsFolder + '/' + filenamify(devicesToEmulate[device].name.toLowerCase().replace(/ /g,'-'));
 			var file = `${deviceFolder}/${fileName}.png`;
 
 			mkdir(deviceFolder);
 
-			// log('   Opening: ' + fullUrl);
-			newLogRow(now + '\t' + fullUrl);
+			if(logLevel == 2) {
+				log('URL:\t' + fullUrl);
+			} else if(logLevel == 1) {
+				newLogRow(now + '\t' + fullUrl)	;
+			}
 
 			await page.emulate(devicesToEmulate[device]);
 
@@ -76,15 +84,18 @@ const captureScreenshots = async () => {
 				}
 			}
 			await page.mouse.move(0,0);
-			updateLogRow(now + '\t' + fullUrl + '\t' + file);
 			await page.screenshot({path: file, fullPage: true});
-			endLogRow(now + '\t' + fullUrl + '\t' + file, lineCount);
 
-			// log('    Saving: ' + file);
+			if(logLevel == 2) {
+				log('IMG:\t' + file);
+			}
 
-			// AQUI ta engazopando o log ...
 			if(compressImages) {
 				await compressPng(file, deviceFolder);
+			}
+			
+			if(logLevel == 1) {
+				endLogRow(now + '\t' + fullUrl + '\t' + file, lineCount);  
 			}
 
 		}
@@ -92,10 +103,12 @@ const captureScreenshots = async () => {
 		await browser.close();
 	}
 
-	var timeDiff = ((new Date()) - startTime) / 1000;
 
-	// banner('Proccess finished. Elapsed time: ' + toHHMMSS(timeDiff));
-	// log('Files saved at: ' + screenshotsFolder + '\n')
+	if(logLevel == 2) {
+		var timeDiff = ((new Date()) - startTime) / 1000;
+		banner('Proccess finished. Elapsed time: ' + toHHMMSS(timeDiff));
+		log('Files saved at: ' + screenshotsFolder + '\n')
+	}
 
 }
 
@@ -109,14 +122,15 @@ const sections = [
 		optionList: [
 			{
 				name: 'help',
+				alias: 'h',
 				description: 'Print out helpful information.'
 			},
 			{
 				name: 'loglevel',
 				alias: 'l',
 				typeLabel: '{underline number}',
-				description: 'Log level. {italic Defalut 1}\n0=Silent, 1=Important only, 2=All.',
-				defaultOption: 1
+				description: 'Log level. {italic Defalut 0}\n0=Silent, 1=Important only, 2=All.',
+				defaultOption: 0
 			}
 		]
 	}

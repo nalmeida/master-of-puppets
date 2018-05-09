@@ -15,20 +15,26 @@ module.exports = {
 		return (s);
 	},
 	newLogRow: function(str) {
-		spinner.color = 'blue';
-		spinner.text = str;
-		spinner.start();	
+		if(module.exports.logLevel == 1) {
+			spinner.color = 'red';
+			spinner.text = str;
+			spinner.start();
+		}
 	},
 	updateLogRow: function(str, color) {
-		spinner.color = color || 'yellow';
-		spinner.text = str;
+		if(module.exports.logLevel == 1) {
+			spinner.color = color || 'yellow';
+			spinner.text = str;
+		}
 	},
 	endLogRow: function(str, symbol) {
-		spinner.text = str;
-		spinner.stopAndPersist({symbol:symbol});
+		if(module.exports.logLevel == 1) {
+			spinner.text = str;
+			spinner.stopAndPersist({symbol:symbol});
+		}
 	},
 	log: function(str) {
-		module.exports.logLevel && console.log('[' + module.exports.time() + '] ' + str);
+		module.exports.logLevel && console.log(module.exports.time() + '\t' + str);
 	},
 	banner: function(str) {
 		module.exports.log('----------- ' + str + ' -----------');
