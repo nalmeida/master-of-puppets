@@ -2,6 +2,8 @@ const fs = require('fs');
 const imagemin = require('imagemin');
 const imageminPngquant = require('imagemin-pngquant');
 const filenamify = require('filenamify');
+const ora = require('ora');
+	const spinner = ora();
 
 module.exports = {
 	logLevel: 0,
@@ -11,6 +13,19 @@ module.exports = {
 			s = '0' + s;
 		}
 		return (s);
+	},
+	newLogRow: function(str) {
+		spinner.color = 'blue';
+		spinner.text = str;
+		spinner.start();	
+	},
+	updateLogRow: function(str, color) {
+		spinner.color = color || 'yellow';
+		spinner.text = str;
+	},
+	endLogRow: function(str, symbol) {
+		spinner.text = str;
+		spinner.stopAndPersist({symbol:symbol});
 	},
 	log: function(str) {
 		module.exports.logLevel && console.log('[' + module.exports.time() + '] ' + str);
@@ -45,9 +60,9 @@ module.exports = {
 				use: [imageminPngquant()]
 			}).then(function(files) {
 				resolve(files[0].path);
-				module.exports.log('  Compress: ' + files[0].path + '\n');
+				// module.exports.log('  Compress: ' + files[0].path + '\n');
 			});
-		}) 
+		});
 	},
 	toHHMMSS: function (str) {
 		var sec_num = parseInt(str, 10);
