@@ -16,7 +16,12 @@
 				}
 			}
 		]
-
- 
-	}	
+	},
+	
+	"diffFolder": "screenshots/_diff",
+	"resembleOptions": {
+		"output": {
+			"errorType": "movement"
+		}
+	}
 }

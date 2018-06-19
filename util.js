@@ -39,6 +39,10 @@ module.exports = {
 	banner: function(str) {
 		module.exports.log('----------- ' + str + ' -----------');
 	},
+	isFolder: function(str) {
+		var stats = fs.statSync(str);
+		return stats.isDirectory();
+	},
 	readJSON: function(file) {
 		file = fs.readFileSync(file, 'utf8');
 		if(module.exports.logLevel > 1) module.exports.log('Reading "setup.json" file:\n' + file);

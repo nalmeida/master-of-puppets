@@ -56,6 +56,7 @@ const captureScreenshots = async () => {
 		var slug = urlsToTest[i].url;
 		var fullUrl = pages.domain + slug;
 		var click = pages.pages[i].click;
+		var waitFor = pages.pages[i].waitFor;
 		var devicesToEmulate = setup.puppeteer.emulate;
 
 		for (device in devicesToEmulate) {
@@ -82,6 +83,9 @@ const captureScreenshots = async () => {
 				for (selector in click) {
 					await page.click(click[selector]);
 				}
+			}
+			if(waitFor) {
+				await page.waitFor(waitFor)
 			}
 			await page.mouse.move(0,0);
 			await page.screenshot({path: file, fullPage: true});
