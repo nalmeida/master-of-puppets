@@ -32,7 +32,7 @@ $ node screenshot --help
   - `pages` <[string]> Path and file name of pages list. _Default_ __```pages.json```__
   - `puppeteer` <[Object]> <[Puppeteer]> config object. _Default_:
   	- `puppeteer.launch` <[boolean]> Whether to to use or not the headless mode. _Default_ __```true```__
-  	- `emulate` <[Array]> Array of objects following the Puppeteer [`page.emulate`](https://github.com/GoogleChrome/puppeteer/blob/master/docs/api.md#pageemulateoptions) standard with the __required__ adition of `name` <[string]> as a short description of the browser / resolution.
+  	- `emulate` <[Array]> Array of objects following the Puppeteer [`DeviceDescriptors.js`](https://github.com/GoogleChrome/puppeteer/blob/master/DeviceDescriptors.js) standards. In order to test different resolutions emulating the same browser, just add the width in the `name` parameter. Eg.: `"name": "Chrome 1024"`.
   - `diffFolder` <[string]> Destination folder for the comparison image files. _Default_ __```screenshots/_diff```__
   - `resembleOptions` <[Object]> <[Resemblejs]> configuration options.
   	- `resembleOptions.output` <[Object]>
