@@ -1,6 +1,7 @@
 const commandLineArgs = require('command-line-args');
 const commandLineUsage = require('command-line-usage');
-const resemblejs = require('resemblejs').compare;
+const compareImages = require("resemblejs/compareImages");
+
 
 const fs = require("mz/fs");
 const util = require('./util.js');
@@ -14,6 +15,7 @@ var logLevel;
 var diffFolder;
 var baseFolder;
 var compareFolder;
+var dryRun;
 var fileList;
 var resembleOptions;
 
@@ -27,6 +29,7 @@ const init = function(commandLineObject) {
 
 	mkdir(diffFolder);
 
+	dryRun = typeof(commandLineObject['dry-run']) == 'object' ?  true : false;
 	baseFolder = commandLineObject.base;
 	compareFolder = commandLineObject.compare;
 	fileList;
@@ -37,29 +40,27 @@ const init = function(commandLineObject) {
 	});
 }
 
+async function getDiff(){
 
-function getDiff(){
+	for (var i=0; i<fileList.length; i++) {
 
-    for (var i=0; i<fileList.length; i++) {
-
-        file = fileList[i];
+		file = fileList[i];
 		var options = resembleOptions;
-        resemblejs(
-                baseFolder + file,
-                compareFolder + file, 
-                options, 
-                function (err, data) {
-                    if (err) {
-                        console.log(err);
-                    } else {
-                    	if(logLevel > 0) {
-                        	log(file + '\t' + (Number(data.misMatchPercentage) / 100).toString().replace('.',','));
-						}
-                        fs.writeFile(diffFolder + '/' + file, data.getBuffer());
-                    }
-                }
-        );
-    }
+
+		const data = await compareImages(
+			await fs.readFile(baseFolder + file),
+			await fs.readFile(compareFolder + file),
+			options
+		);
+
+		if(logLevel > 0 || dryRun) {
+			console.log(file + '\t' + (Number(data.misMatchPercentage) / 100).toString().replace('.',','));
+		}
+
+		if(dryRun === false) {
+			await fs.writeFile(diffFolder + '/' + file, data.getBuffer());
+		}
+	}
 }
 
 const sections = [
@@ -83,6 +84,11 @@ const sections = [
 				defaultOption: 0
 			},
 			{
+				name: 'dry-run',
+				alias: 'd',
+				description: 'Compares the images without saving any new files.'
+			},
+			{
 				name: 'base',
 				alias: 'b',
 				typeLabel: '{italic string}',
@@ -104,6 +110,7 @@ const optionDefinitions = [
 	{ name: 'loglevel', alias: 'l', type: Number },
 	{ name: 'base', alias: 'b', type: String},
 	{ name: 'compare', alias: 'c', type: String},
+	{ name: 'dry-run', alias: 'd'}
 ]
 const options = commandLineArgs(optionDefinitions);
 
