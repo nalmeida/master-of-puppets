@@ -28,13 +28,15 @@ const init = function(commandLineObject) {
 		diffFolder = setup.diffFolder;
 		resembleOptions = setup.resembleOptions;
 
-	rm(diffFolder);
-	mkdir(diffFolder);
 
 	dryRun = typeof(commandLineObject['dry-run']) == 'object' ?  true : false;
 	baseFolder = commandLineObject.base;
 	compareFolder = commandLineObject.compare;
-	fileList;
+	
+	if(dryRun === false) {
+		rm(diffFolder);
+		mkdir(diffFolder);
+	}
 
 	fs.readdir(baseFolder, function(err, items) {
 		fileList = items;
