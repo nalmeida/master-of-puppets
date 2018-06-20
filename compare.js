@@ -8,6 +8,7 @@ const util = require('./util.js');
 	const log = util.log;
 	const readJSON = util.readJSON;
 	const mkdir = util.mkdir;
+	const rm = util.rm;
 	const isFolder = util.isFolder;
 
 var setup;
@@ -27,6 +28,7 @@ const init = function(commandLineObject) {
 		diffFolder = setup.diffFolder;
 		resembleOptions = setup.resembleOptions;
 
+	rm(diffFolder);
 	mkdir(diffFolder);
 
 	dryRun = typeof(commandLineObject['dry-run']) == 'object' ?  true : false;
