@@ -1,5 +1,5 @@
 {
-	"domain": "https://www.toyota.com.br",
+	"domain": "http://hml.toyota.com.br",
 	"pages": [
 		{ "url": "/", "click": ["#warning-toyota-ok"]},
 		{ "url": "/modelos/etios-hatch/comparativo/"},
