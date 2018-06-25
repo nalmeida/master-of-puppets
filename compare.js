@@ -2,7 +2,6 @@ const commandLineArgs = require('command-line-args');
 const commandLineUsage = require('command-line-usage');
 const compareImages = require("resemblejs/compareImages");
 
-
 const fs = require("mz/fs");
 const util = require('./util.js');
 	const log = util.log;
@@ -10,16 +9,17 @@ const util = require('./util.js');
 	const mkdir = util.mkdir;
 	const rm = util.rm;
 	const isFolder = util.isFolder;
+	const addSlash = util.addSlash;
+	const getRecursiveFileList = util.getRecursiveFileList;
 
 var setup;
 var logLevel;
 var diffFolder;
+var toCompare;
 var baseFolder;
 var compareFolder;
 var dryRun;
-var fileList;
 var resembleOptions;
-
 
 const init = function(commandLineObject) {
 
@@ -28,43 +28,78 @@ const init = function(commandLineObject) {
 		diffFolder = setup.diffFolder;
 		resembleOptions = setup.resembleOptions;
 
-
 	dryRun = typeof(commandLineObject['dry-run']) == 'object' ?  true : false;
-	baseFolder = commandLineObject.base;
-	compareFolder = commandLineObject.compare;
+
+	baseFolder = addSlash(commandLineObject.base);
+	compareFolder = addSlash(commandLineObject.compare);
+
+	var fullBaseList = (getRecursiveFileList(addSlash(commandLineObject.base)))
+	// var fullCompareList = (getRecursiveFileList(addSlash(commandLineObject.compare)))
 	
 	if(dryRun === false) {
 		rm(diffFolder);
 		mkdir(diffFolder);
 	}
 
-	fs.readdir(baseFolder, function(err, items) {
-		fileList = items;
-		getDiff();
-	});
+	getDiff(fullBaseList);
 }
 
-async function getDiff(){
+async function getDiff(fullBaseList) {
 
-	for (var i=0; i<fileList.length; i++) {
+	// log('Base Folder:');
+	// log(fullBaseList);
+	// log('Compare Folder:');
+	// log(fullCompareList);
 
-		file = fileList[i];
+	var destinationFolder = addSlash(diffFolder);
+
+	for (var i=0; i<fullBaseList.length; i++) {
+
+		var baseFilePath = fullBaseList[i];
+		var compareFilePath = baseFilePath.replace(baseFolder, compareFolder);
+
+		var fileName = baseFilePath.split('/').slice(-1).toString();
+		var resFolder = baseFilePath.split('/').slice(-2,-1).toString();
 		var options = resembleOptions;
+		var fileA = fileB = null;
+
+		try {
+			fileA = await fs.readFile(baseFilePath);
+		} catch(e) {}
+
+		try {
+			fileB = await fs.readFile(compareFilePath);
+		} catch(e) {}
+
+		// console.log(Boolean(fileB) + ' ' + baseFilePath + ' → ' + compareFilePath + '\n')
+
+		if(!Boolean(fileB)) {
+			if(logLevel > 0 || dryRun) {
+				log(baseFilePath + '\t ONLY AT BASE');
+			}
+			continue;
+		}
 
 		const data = await compareImages(
-			await fs.readFile(baseFolder + file),
-			await fs.readFile(compareFolder + file),
+			fileA,
+			fileB,
 			options
 		);
 
+		var diffFile = addSlash(destinationFolder) + addSlash(resFolder) + fileName;
+
 		if(logLevel > 0 || dryRun) {
-			console.log(file + '\t' + (Number(data.misMatchPercentage) / 100).toString().replace('.',','));
+			log(diffFile + '\t' + (Number(data.misMatchPercentage) / 100).toString().replace('.',','));
 		}
 
 		if(dryRun === false) {
-			await fs.writeFile(diffFolder + '/' + file, data.getBuffer());
+			mkdir(destinationFolder);
+			mkdir(addSlash(destinationFolder) + addSlash(resFolder))
+			await fs.writeFile(diffFile, data.getBuffer());
 		}
+
 	}
+	
 }
 
 const sections = [

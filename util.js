@@ -1,4 +1,5 @@
 const fs = require('fs');
+const path = require('path');
 const imagemin = require('imagemin');
 const imageminPngquant = require('imagemin-pngquant');
 const filenamify = require('filenamify');
@@ -39,6 +40,13 @@ module.exports = {
 	banner: function(str) {
 		module.exports.log('----------- ' + str + ' -----------');
 	},
+	addSlash: function(str) {
+		var last = str.slice(-1);
+		if (last != '/') {
+			return str + '/'
+		}
+		return str;
+	},
 	isFolder: function(str) {
 		var stats = fs.statSync(str);
 		return stats.isDirectory();
@@ -59,7 +67,7 @@ module.exports = {
 			fs.readdirSync(path).forEach(function(file,index){
 			var curPath = path + "/" + file;
 				if(fs.lstatSync(curPath).isDirectory()) { // recurse
-					deleteFolderRecursive(curPath);
+					module.exports.rm(curPath);
 				} else { // delete file
 					fs.unlinkSync(curPath);
 				}
@@ -194,5 +202,20 @@ module.exports = {
 		}
 
 		return str;
+	},
+	getRecursiveFileList: function(dir, filelist) {
+		files = fs.readdirSync(dir);
+		filelist = filelist || [];
+		files.forEach(function(file) {
+			if (fs.statSync(path.join(dir, file)).isDirectory()) {
+				filelist = module.exports.getRecursiveFileList(path.join(dir, file), filelist);
+			} else {
+				var ext = file.slice(-3);
+				if(ext == 'png' || ext == 'jpg') {
+					filelist.push(module.exports.addSlash(dir) + file);
+				}
+			}
+		});
+		return filelist;
 	}
 }
