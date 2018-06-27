@@ -33,7 +33,19 @@
 	"diffFolder": "diff",
 	"resembleOptions": {
 		"output": {
-			"errorType": "movement"
-		}
+            "errorColor": {
+                "red": 255,
+                "green": 0,
+                "blue": 255
+            },
+            "errorType": "movement",
+            "transparency": 1,
+            "largeImageThreshold": 5000,
+            "useCrossOrigin": false,
+            "outputDiff": true
+        },
+        "scaleToSameSize": false,
+        "ignore": "colors"
+
 	}
 }
