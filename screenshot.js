@@ -37,6 +37,26 @@ var init = function(commandLineObject){
 
 var startTime = new Date();
 
+const autoScroll = function(page){
+    return page.evaluate(() => {
+        return new Promise((resolve, reject) => {
+            var totalHeight = 0;
+            var distance = 100;
+            var timer = setInterval(() => {
+                var scrollHeight = document.body.scrollHeight;
+                window.scrollBy(0, distance);
+                totalHeight += distance;
+
+                if(totalHeight >= scrollHeight){
+                    window.scrollBy(0, 0);
+                    clearInterval(timer);
+                    resolve();
+                }
+            }, 100);
+        })
+    });
+}
+
 const captureScreenshots = async () => {
 
 	var screenshotsFolder = setup.screenshotsFolder + '/' + timeStamp();
@@ -79,6 +99,9 @@ const captureScreenshots = async () => {
 			await page.emulate(devicesToEmulate[device]);
 
 			await page.goto(fullUrl);
+
+			await autoScroll(page);
+
 			if(click) {
 				for (selector in click) {
 					await page.click(click[selector]);
