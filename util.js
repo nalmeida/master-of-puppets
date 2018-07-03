@@ -47,6 +47,21 @@ module.exports = {
 		}
 		return str;
 	},
+	findDuplicates: function(arr) {
+		var len=arr.length,
+				out=[],
+				counts={};
+
+		for (var i=0;i<len;i++) {
+			var item = arr[i];
+			counts[item] = counts[item] >= 1 ? counts[item] + 1 : 1;
+			if (counts[item] === 2) {
+				out.push(item);
+			}
+		}
+
+		return out;
+	},
 	isFolder: function(str) {
 		var stats = fs.statSync(str);
 		return stats.isDirectory();
