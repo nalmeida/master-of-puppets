@@ -15,11 +15,13 @@ const util = require('./util.js');
 	const newLogRow = util.newLogRow;
 	const updateLogRow = util.updateLogRow;
 	const endLogRow = util.endLogRow;
+	const findDuplicates = util.findDuplicates;
 
 var setup;
 var pages;
 var compressImages;
 var logLevel;
+var urlsToTest;
 
 var init = function(commandLineObject){
 
@@ -27,6 +29,20 @@ var init = function(commandLineObject){
 	setup = readJSON('setup.json');
 		compressImages = setup.compressImages;
 	pages = readJSON(setup.pages);
+		urlsToTest = pages.pages;
+
+	var tmpArr = [];
+
+	for (var i = 0; i < urlsToTest.length; i++) {
+		tmpArr.push(urlsToTest[i].url)
+	}
+
+	var duplicateUrl = findDuplicates(tmpArr);
+	if(duplicateUrl.length > 0) {
+		console.error('Error: duplicate url found.\n' + (duplicateUrl.join('\r\n')));
+		process.exit(1);
+	}
+
 	if(logLevel == 2) {
 		banner('Starting Screenshot');
 	}
@@ -66,7 +82,6 @@ const captureScreenshots = async () => {
 		log('Creating "' + screenshotsFolder + '" folder\n');
 	}
 
-	var urlsToTest = pages.pages;
 	var lineCount = 0;
 	
 	for (var i=0; i < urlsToTest.length; i++) {
