@@ -24,9 +24,17 @@ var urlsToTest;
 var init = function(commandLineObject){
 
 	util.logLevel = logLevel = !isNaN(commandLineObject.loglevel) ? commandLineObject.loglevel : 0;
-	setup = readJSON('setup.json');
+	
+	var setupFile = commandLineObject.pages || 'setup.json';
+	var domainConfig = commandLineObject.domain || false;
+
+	setup = readJSON(setupFile);
 	pages = readJSON(setup.pages);
 		urlsToTest = pages.pages;
+
+	if(domainConfig) {
+		pages.domain = domainConfig;
+	}
 
 	var tmpArr = [];
 
@@ -164,8 +172,20 @@ const sections = [
 				name: 'loglevel',
 				alias: 'l',
 				typeLabel: '{underline number}',
-				description: 'Log level. {italic Defalut 0}\n0=Silent, 1=Important only, 2=All.',
+				description: 'Log level. {italic Default 0}\n0=Silent, 1=Important only, 2=All.',
 				defaultOption: 0
+			},
+			{
+				name: 'domain',
+				alias: 'd',
+				typeLabel: '{underline String}',
+				description: 'Main domain to be tested. It is concatenated of the beginning of the each "url" from the {italic pages.json} file. This parameter {underline OVERRIDES} the "doamin" parameter from the {italic pages.json} file'
+			},
+			{
+				name: 'pages',
+				alias: 'p',
+				typeLabel: '{underline String}',
+				description: 'The path to the {italic pages.json} file. Default option uses {italic pages.json} from the root of the project.'
 			}
 		]
 	}
@@ -176,8 +196,7 @@ const optionDefinitions = [
 	{ name: 'help', alias: 'h' },
 	{ name: 'loglevel', alias: 'l', type: Number },
 	{ name: 'domain', alias: 'd', type: String},
-	{ name: 'pages', alias: 'p', type: String},
-	{ name: 'timeout', alias: 't', type: Number }
+	{ name: 'pages', alias: 'p', type: String}
 ]
 const options = commandLineArgs(optionDefinitions);
 
