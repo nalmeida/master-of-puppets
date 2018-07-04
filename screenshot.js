@@ -9,7 +9,6 @@ const util = require('./util.js');
 	const readJSON = util.readJSON;
 	const banner = util.banner;
 	const log = util.log;
-	const compressPng = util.compressPng;
 	const toHHMMSS = util.toHHMMSS;
 	const filenamify = util.filenamify;
 	const newLogRow = util.newLogRow;
@@ -19,7 +18,6 @@ const util = require('./util.js');
 
 var setup;
 var pages;
-var compressImages;
 var logLevel;
 var urlsToTest;
 
@@ -27,7 +25,6 @@ var init = function(commandLineObject){
 
 	util.logLevel = logLevel = !isNaN(commandLineObject.loglevel) ? commandLineObject.loglevel : 0;
 	setup = readJSON('setup.json');
-		compressImages = setup.compressImages;
 	pages = readJSON(setup.pages);
 		urlsToTest = pages.pages;
 
@@ -101,7 +98,7 @@ const captureScreenshots = async () => {
 			var now = (util.logLevel == 1 ? '\t': '') + util.time();
 			var fileName = i + '_' + filenamify(slug);
 			var deviceFolder = screenshotsFolder + '/' + filenamify(devicesToEmulate[device].name.toLowerCase().replace(/ /g,'-'));
-			var file = `${deviceFolder}/${fileName}.png`;
+			var file = `${deviceFolder}/${fileName}.jpg`;
 
 			mkdir(deviceFolder);
 
@@ -130,10 +127,6 @@ const captureScreenshots = async () => {
 
 			if(logLevel == 2) {
 				log('IMG:\t' + file);
-			}
-
-			if(compressImages) {
-				await compressPng(file, deviceFolder);
 			}
 			
 			if(logLevel == 1) {
@@ -182,7 +175,8 @@ const usage = commandLineUsage(sections)
 const optionDefinitions = [
 	{ name: 'help', alias: 'h' },
 	{ name: 'loglevel', alias: 'l', type: Number },
-	{ name: 'src', type: String, multiple: true, defaultOption: true },
+	{ name: 'domain', alias: 'd', type: String},
+	{ name: 'pages', alias: 'p', type: String},
 	{ name: 'timeout', alias: 't', type: Number }
 ]
 const options = commandLineArgs(optionDefinitions);

@@ -1,7 +1,5 @@
 const fs = require('fs');
 const path = require('path');
-const imagemin = require('imagemin');
-const imageminPngquant = require('imagemin-pngquant');
 const filenamify = require('filenamify');
 const ora = require('ora');
 	const spinner = ora();
@@ -99,16 +97,6 @@ module.exports = {
 		var d = (new Date());
 		var timeStamp = d.getFullYear() + '.' + module.exports.l2(d.getMonth() + 1) + '.' + module.exports.l2(d.getDate()) + '-' + module.exports.time().replace(/:/g,'.');
 		return timeStamp;
-	},
-	compressPng: function(file, screenshotsFolder) {
-		return new Promise(function(resolve) {
-			imagemin([file], screenshotsFolder, {
-				use: [imageminPngquant()]
-			}).then(function(files) {
-				resolve(files[0].path);
-				// module.exports.log('  Compress: ' + files[0].path + '\n');
-			});
-		});
 	},
 	toHHMMSS: function (str) {
 		var sec_num = parseInt(str, 10);

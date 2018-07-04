@@ -27,7 +27,6 @@ $ node screenshot --help
 
 ### Parameters
 
- - `compressImages` <[boolean]> Whether to compress the generated images. _Default_ __```true```__
  - `screenshotsFolder` <[string]> Destination folder for the image files. _Default_ __```screenshots```__
   - `pages` <[string]> Path and file name of pages list. _Default_ __```pages.json```__
   - `puppeteer` <[Object]> <[Puppeteer]> config object. _Default_:
@@ -42,7 +41,6 @@ $ node screenshot --help
 
 ```
 {
-	"compressImages": true,
 	"screenshotsFolder": "screenshots",
 	"pages": "pages.json",
 	"puppeteer": {
@@ -57,16 +55,38 @@ $ node screenshot --help
 					"width": 1280,
 					"height": 780
 				}
+			},
+			{
+				"name": "iPhone 6",
+				"userAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 11_0 like Mac OS X) AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1",
+				"viewport": {
+					"width": 375,
+					"height": 667,
+					"deviceScaleFactor": 2,
+					"isMobile": true,
+					"hasTouch": true,
+					"isLandscape": false
+				}
 			}
 		]
 	},
 	
-	"diffFolder": "screenshots/_diff",
+	"diffFolder": "diff",
 	"resembleOptions": {
 		"output": {
-			"errorType": "movement"
-		}
-	}
+			"errorColor": {
+				"red": 255,
+				"green": 0,
+				"blue": 255
+			},
+			"errorType": "movement",
+			"transparency": 1,
+			"largeImageThreshold": 5000,
+			"useCrossOrigin": false,
+			"outputDiff": true
+		},
+		"scaleToSameSize": false,
+		"ignore": "colors"
 }
 ```
 
