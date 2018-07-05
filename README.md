@@ -17,10 +17,20 @@ $ npm install
 
 # Taking screenshots
 
-In order to read the help, run the command:
+## CLI Options
 
 ```
-$ node screenshot --help
+Options
+
+  -h, --help              Print out helpful information.                                                
+  -l, --loglevel number   Log level. Default 0                                                          
+                          0=Silent, 1=Important only, 2=All.                                            
+  -d, --domain String     Main domain to be tested. It is concatenated of the beginning of the each     
+                          "url" from the pages.json file. This parameter OVERRIDES the "doamin"         
+                          parameter from the pages.json file                                            
+  -p, --pages String      The path to the pages.json file. Default option uses pages.json from the root 
+                          of the project.                                                               
+
 ```
 
 ## Config the __`setup.json`__
@@ -31,7 +41,7 @@ $ node screenshot --help
   - `pages` <[string]> Path and file name of pages list. _Default_ __```pages.json```__
   - `puppeteer` <[Object]> <[Puppeteer]> config object. _Default_:
   	- `puppeteer.launch` <[boolean]> Whether to to use or not the headless mode. _Default_ __```true```__
-  	- `emulate` <[Array]> Array of objects following the Puppeteer [`DeviceDescriptors.js`](https://github.com/GoogleChrome/puppeteer/blob/master/DeviceDescriptors.js) standards. In order to test different resolutions emulating the same browser, just add the width in the `name` parameter. Eg.: `"name": "Chrome 1024"`.
+  	- `emulate` <[Array]> Array of objects following the Puppeteer [`DeviceDescriptors.js`](https://github.com/GoogleChrome/puppeteer/blob/master/DeviceDescriptors.js) standards. In order to test different resolutions emulating the same browser, just add the width in the `name` parameter. E.g.: `"name": "Chrome 1024"`.
   - `diffFolder` <[string]> Destination folder for the comparison image files. _Default_ __```screenshots/_diff```__
   - `resembleOptions` <[Object]> [`Resemblejs`](https://github.com/HuddleEng/Resemble.js#nodejs) configuration options.
 
@@ -97,6 +107,12 @@ $ node screenshot --help
 	- `url` <[string]> Url path. It is also used to create a unique filename for each image so, it is important to have a unique `url` name. If you want to test mutiple scenarios from the same page, use some `querystring` to identify it otherwise the last file will override the previous one.
 	- `click` <[array]> Array of elements to be clicked. Each element is a [selector] to search for element to click. If there are multiple elements satisfying the selector, the first will be clicked. It follows the same behavior of the `document.querySelectorAll` of javascript.
 	- `waitFor` If follows the [Puppeteer] __[`page.waitFor`](https://github.com/GoogleChrome/puppeteer/blob/v1.2.0/docs/api.md#pagewaitforselectororfunctionortimeout-options-args)__ documentation.
+
+Actions will follow the order:
+
+```
+ Page load event → autoScroll → click → waitFor → screenshot
+```
 
 #### Sample file:
 
