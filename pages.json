@@ -1,14 +1,18 @@
 {
-    "domain": "http://www.yoursupercoolsite.com",
-    "pages": [
-        { "url": "/", "click": ["#mainbutton"]},
-        { "url": "/?complex-selector", "click": [".menu-secondary > ul > li:nth-child(2) > .link"]},
-        { "url": "/?3-buttons", "click": ["#firstbutton", ".secondbutton", "#send-form a"]},
-        { "url": "/?click-and-wait", "click": ["#mainbutton"], "waitFor": 5000},
-        { "url": "/contact"},
-        { "url": "/products"},
-        { "url": "/products/product-1"},
-        { "url": "/products/product-2"},
-        { "url": "/products/product-3"}
-    ]
+	"domain": "http://homologacaotoyota.hostsag2.com.br",
+	"authenticate": {
+		"username": null,
+		"password": null
+	},
+	"pages": [
+		{ "url": "/", "click": ["#mainbutton"]},
+		{ "url": "/?complex-selector", "click": [".menu-secondary > ul > li:nth-child(2) > .link"]},
+		{ "url": "/?3-buttons", "click": ["#firstbutton", ".secondbutton", "#send-form a"]},
+		{ "url": "/?click-and-wait", "click": ["#mainbutton"], "waitFor": 5000},
+		{ "url": "/contact"},
+		{ "url": "/products"},
+		{ "url": "/products/product-1"},
+		{ "url": "/products/product-2"},
+		{ "url": "/products/product-3"}
+	]
 }

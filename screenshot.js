@@ -17,6 +17,8 @@ const util = require('./util.js');
 	const findDuplicates = util.findDuplicates;
 
 var setup;
+var authenticateUser;
+var authenticatePass;
 var pages;
 var logLevel;
 var urlsToTest;
@@ -33,9 +35,12 @@ var init = function(commandLineObject){
 
 
 	setup = readJSON(setupFile);
-	autoScroll = setup.autoScroll;
+		autoScroll = setup.autoScroll;
+
 	pages = readJSON(setup.pages);
 		urlsToTest = pages.pages;
+		authenticateUser = pages.authenticate.username
+		authenticatePass = pages.authenticate.password
 
 	if(domainConfig != undefined) {
 		pages.domain = domainConfig;
@@ -105,6 +110,10 @@ const captureScreenshots = async () => {
 		
 		var browser = await puppeteer.launch(setup.puppeteer.launch)
 		var page = await browser.newPage();
+			if(authenticateUser != null && authenticatePass != null) {
+				page.authenticate({username:authenticateUser, password: authenticatePass})
+			}
+
 		var slug = urlsToTest[i].url;
 		var fullUrl = pages.domain + slug;
 		var click = pages.pages[i].click;

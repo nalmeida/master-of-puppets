@@ -105,8 +105,11 @@ Options
 ### Parameters
 
  - `domain` <[string]> Main domain to be tested. It is concatenated with the `pages.url`.
+ - `authenticate` <[Object]> Object credentials for [http authentication](https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication). See more at [Puppeteer page.authenticate](https://github.com/GoogleChrome/puppeteer/blob/master/docs/api.md#pageauthenticatecredentials) documentation. If `username` or `password` equal to `null`, will not run the `page.authenticate` method.
+ 	- `username` <[string]> _Default_ __```null```__
+ 	- `password` <[string]> _Default_ __```null```__
  - `pages` <[Array]> Array of objects containing information about the pages to be tested.
-	- `url` <[string]> Url path. It is also used to create a unique filename for each image so, it is important to have a unique `url` name. If you want to test mutiple scenarios from the same page, use some `querystring` to identify it otherwise the last file will override the previous one.
+	- `url` <[string]> URL path. It is also used to create a unique filename for each image so, it is important to have a unique `url` name. If you want to test mutiple scenarios from the same page, use some `querystring` to identify it otherwise the last file will override the previous one.
 	- `click` <[array]> Array of elements to be clicked. Each element is a [selector] to search for element to click. If there are multiple elements satisfying the selector, the first will be clicked. It follows the same behavior of the `document.querySelectorAll` of javascript.
 	- `waitFor` If follows the [Puppeteer] __[`page.waitFor`](https://github.com/GoogleChrome/puppeteer/blob/v1.2.0/docs/api.md#pagewaitforselectororfunctionortimeout-options-args)__ documentation.
 
