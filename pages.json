@@ -1,9 +1,14 @@
 {
-	"domain": "http://hml.toyota.com.br",
-	"pages": [
-		{ "url": "/", "click": ["#warning-toyota-ok"]},
-		{ "url": "/modelos/etios-hatch/comparativo/"},
-		{ "url": "/modelos/etios-hatch/monte/?"},
-		{ "url": "/modelos/etios-hatch/monte/?mdl=1,0,0,0,0,0,0,1"}
-	]
+    "domain": "http://www.yoursupercoolsite.com",
+    "pages": [
+        { "url": "/", "click": ["#mainbutton"]},
+        { "url": "/?complex-selector", "click": [".menu-secondary > ul > li:nth-child(2) > .link"]},
+        { "url": "/?3-buttons", "click": ["#firstbutton", ".secondbutton", "#send-form a"]},
+        { "url": "/?click-and-wait", "click": ["#mainbutton"], "waitFor": 5000},
+        { "url": "/contact"},
+        { "url": "/products"},
+        { "url": "/products/product-1"},
+        { "url": "/products/product-2"},
+        { "url": "/products/product-3"}
+    ]
 }
