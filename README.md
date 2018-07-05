@@ -7,15 +7,16 @@
 <!-- MarkdownTOC autolink="true" -->
 
 - [Install](#install)
-- [Usage](#usage)
 - [Taking screenshots](#taking-screenshots)
-	- [CLI Options](#cli-options)
+	- [screenshot CLI Options](#screenshot-cli-options)
 	- [Config the __`setup.json`__](#config-the-__setupjson__)
 		- [Parameters](#parameters)
 			- [Sample file:](#sample-file)
 	- [Config the __`pages.json`__](#config-the-__pagesjson__)
 		- [Parameters](#parameters-1)
 			- [Sample file:](#sample-file-1)
+- [Comparing screenshots](#comparing-screenshots)
+	- [screenshot CLI Options](#screenshot-cli-options-1)
 
 <!-- /MarkdownTOC -->
 
@@ -27,11 +28,9 @@ Clone this repository and run:
 $ npm install
 ```
 
-# Usage
-
 # Taking screenshots
 
-## CLI Options
+## screenshot CLI Options
 
 ```
   -h, --help                 Print out helpful information.                                                
@@ -154,6 +153,52 @@ Actions will follow the order:
 		{ "url": "/products/product-3"}
 	]
 }
+```
+
+# Comparing screenshots
+
+The `compare.js` script compares two image folders, generates the diff images inside a folder. The diff destination folder can be set inside the `setup.json` file by the `diffFolder` parameter.
+
+When `screenshot.js` runs, it creates a folder inside `screenshots` using a timestamp format (YYYY.MM.DD-HH.MM.SSSS) to avoid folder naming conflic and overriding. E.g.: `2018.07.05-16.34.929`. 
+
+Inside the "timestamp" folder, it creates a folder structure for each "device" name. E.g.:
+
+```
+./screenshots/2018.07.05-16.34.929/
+              |– chrome-1280/
+              |– chrome-1024/
+              |– iphone-6/
+              ...
+```
+
+It is mandatory to set a `--base` *and* `--compare` folder and they must be the "timestamp" folder so, the script will search for the images in the "device" child folders.
+
+In order to make easier to use the compare de compare CLI, you can rename your "timestamp" folder to a easier name do recall such as "production" ou "staging". E.g.:
+
+```
+./screenshots/production/
+              |– chrome-1280/
+              |– chrome-1024/
+              |– iphone-6/
+./screenshots/staging/
+              |– chrome-1280/
+              |– chrome-1024/
+              |– iphone-6/
+```
+
+
+
+## screenshot CLI Options
+
+```
+Options List
+
+  -h, --help              Print out helpful information.                                  
+  -l, --loglevel Number   Log level. Defalut 0                                            
+                          0=Silent, 1=Important only, 2=All.                              
+  -b, --base String       Path to the folder used as the base for comparison.             
+  -c, --compare String    Path to the folder used for comparison against the base folder. 
+  -d, --dry-run           Compares the images without saving the diff files.  
 ```
 
 

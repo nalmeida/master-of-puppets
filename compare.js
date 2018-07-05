@@ -108,7 +108,16 @@ const sections = [
 		content: 'Visual compare screenshots taken using screenshots.js using ResembleJS.'
 	},
 	{
-		header: 'Options',
+		header: 'Synopsis',
+		content: [
+			'$ node compare <base> <compare> <options>\n',
+			'$ node compare {italic --help}\n',
+			'$ node compare {italic --loglevel 1} {italic --base screenshots/prodFolder} {italic --compare screenshots/stageFolder} {italic --dry-run}\n',
+			'$ node compare {italic -l 1} {italic -b screenshots/prodFolder} {italic -c screenshots/stageFolder} {italic -d}\n'
+		]
+	},
+	{
+		header: 'Options List',
 		optionList: [
 			{
 				name: 'help',
@@ -118,26 +127,26 @@ const sections = [
 			{
 				name: 'loglevel',
 				alias: 'l',
-				typeLabel: '{italic number}',
+				typeLabel: '{italic Number}',
 				description: 'Log level. {italic Defalut 0}\n0=Silent, 1=Important only, 2=All.',
 				defaultOption: 0
 			},
 			{
-				name: 'dry-run',
-				alias: 'd',
-				description: 'Compares the images without saving any new files.'
-			},
-			{
 				name: 'base',
 				alias: 'b',
-				typeLabel: '{italic string}',
+				typeLabel: '{italic String}',
 				description: 'Path to the folder used as the base for comparison.'
 			},
 			{
 				name: 'compare',
 				alias: 'c',
-				typeLabel: '{italic string}',
+				typeLabel: '{italic String}',
 				description: 'Path to the folder used for comparison against the base folder.'
+			},
+			{
+				name: 'dry-run',
+				alias: 'd',
+				description: 'Compares the images without saving the diff files.'
 			}
 		]
 	}

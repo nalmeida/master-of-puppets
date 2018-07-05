@@ -83,23 +83,23 @@ var startTime = new Date();
 
 const scrollToBottom = function(page){
 	// from: https://github.com/GoogleChrome/puppeteer/issues/844#issuecomment-338916722
-    return page.evaluate(() => {
-        return new Promise((resolve, reject) => {
-            var totalHeight = 0;
-            var distance = 100;
-            var timer = setInterval(() => {
-                var scrollHeight = document.body.scrollHeight;
-                window.scrollBy(0, distance);
-                totalHeight += distance;
+	return page.evaluate(() => {
+		return new Promise((resolve, reject) => {
+			var totalHeight = 0;
+			var distance = 100;
+			var timer = setInterval(() => {
+				var scrollHeight = document.body.scrollHeight;
+				window.scrollBy(0, distance);
+				totalHeight += distance;
 
-                if(totalHeight >= scrollHeight){
-                    window.scrollBy(0, 0);
-                    clearInterval(timer);
-                    resolve();
-                }
-            }, 100);
-        })
-    });
+				if(totalHeight >= scrollHeight){
+					window.scrollBy(0, 0);
+					clearInterval(timer);
+					resolve();
+				}
+			}, 100);
+		})
+	});
 }
 
 const captureScreenshots = async () => {
@@ -191,14 +191,14 @@ const sections = [
 		content: 'Generates screenshots from a page list using Puppeteer and Chromium.'
 	},
 	{
-    header: 'Synopsis',
-    content: [
-      '$ node screenshot <options>\n',
-      '$ node screenshot {italic --help}\n',
-      '$ node screenshot {italic --loglevel 1} {italic --headless false} {italic --pages anotherfile.json} {italic --domanin http://www.myanotherdomain.com} {italic --auth myuser:MyP4ssw0rd}\n',
-      '$ node screenshot {italic -l 1} {italic -h false} {italic -p anotherfile.json} {italic -d http://www.myanotherdomain.com} {italic -a myuser:MyP4ssw0rd}'
-    ]
-  },
+		header: 'Synopsis',
+		content: [
+			'$ node screenshot <options>\n',
+			'$ node screenshot {italic --help}\n',
+			'$ node screenshot {italic --loglevel 1} {italic --headless false} {italic --pages anotherfile.json} {italic --domanin http://www.myanotherdomain.com} {italic --auth myuser:MyP4ssw0rd}\n',
+			'$ node screenshot {italic -l 1} {italic -h false} {italic -p anotherfile.json} {italic -d http://www.myanotherdomain.com} {italic -a myuser:MyP4ssw0rd}'
+		]
+	},
 	{
 		header: 'Options List',
 		optionList: [
