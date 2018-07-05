@@ -4,6 +4,21 @@
 ╩ ╩╩ ╩╚═╝ ╩ ╚═╝╩╚═  ╚═╝╚    ╩  ╚═╝╩  ╩  ╚═╝ ╩ ╚═╝
 ```
 
+<!-- MarkdownTOC autolink="true" -->
+
+- [Install](#install)
+- [Usage](#usage)
+- [Taking screenshots](#taking-screenshots)
+	- [CLI Options](#cli-options)
+	- [Config the __`setup.json`__](#config-the-__setupjson__)
+		- [Parameters](#parameters)
+			- [Sample file:](#sample-file)
+	- [Config the __`pages.json`__](#config-the-__pagesjson__)
+		- [Parameters](#parameters-1)
+			- [Sample file:](#sample-file-1)
+
+<!-- /MarkdownTOC -->
+
 # Install
 
 Clone this repository and run:
