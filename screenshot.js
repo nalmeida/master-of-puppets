@@ -199,7 +199,7 @@ const sections = [
 				name: 'headless',
 				alias: 'e',
 				typeLabel: '{underline Boolean}',
-				description: 'Set Puppeteer to run in the headless mode. {italic Default uses the headless parameter from the setup.json file}.\nThis parameter {underline OVERRIDES} the "headless" parameter from the {italic pages.json} file.'
+				description: 'Set Puppeteer to run in the headless mode. Default uses the "headless" parameter from the {italic setup.json} file. This parameter {underline OVERRIDES} the "headless" parameter from the {italic pages.json} file.'
 			},
 			{
 				name: 'pages',

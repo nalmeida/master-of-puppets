@@ -39,7 +39,7 @@ Options
 ### Parameters
 
  - `screenshotsFolder` <[string]> Destination folder for the image files. _Default_ __```screenshots```__
- - `autoScroll` <[Boolead]> Option for Puppeteer to scroll automatically to the bottom of the page before screenshot. Useful for scroll incrementally through a page in order to deal with lazy loaded elements. It scrolls in 100px every 100ms until the bottom of the page. _Default_ __```true```__
+ - `autoScroll` <[Boolean]> Option for Puppeteer to scroll automatically to the bottom of the page before screenshot. Useful for scroll incrementally through a page in order to deal with lazy loaded elements. It scrolls in 100px every 100ms until the bottom of the page. _Default_ __```true```__
   - `pages` <[string]> Path and file name of pages list. _Default_ __```pages.json```__
   - `puppeteer` <[Object]> <[Puppeteer]> config object. _Default_:
   	- `puppeteer.launch` <[boolean]> Whether to to use or not the headless mode. _Default_ __```true```__
