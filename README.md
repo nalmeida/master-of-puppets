@@ -27,9 +27,9 @@ Options
   -d, --domain String      Main domain to be tested. It is concatenated of the beginning of the each     
                            "url" from the pages.json file. This parameter OVERRIDES the "doamin"         
                            parameter from the pages.json file.                                           
-  -e, --headless Boolean   Set Puppeteer to run in the headless mode. Default uses the headless          
-                           parameter from the setup.json file.                                           
-                           This parameter OVERRIDES the "headless" parameter from the pages.json file.   
+  -e, --headless Boolean   Set Puppeteer to run in the headless mode. Default uses the "headless"        
+                           parameter from the setup.json file. This parameter OVERRIDES the "headless"   
+                           parameter from the pages.json file.                                           
   -p, --pages String       The path to the pages.json file. Default option uses pages.json from the root 
                            of the project. 
 ```
