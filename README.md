@@ -19,19 +19,18 @@ $ npm install
 ## CLI Options
 
 ```
-Options
+  -h, --help                 Print out helpful information.                                                
+  -l, --loglevel Number      Log level. Default 0                                                          
+                             0=Silent, 1=Important only, 2=All.                                            
+  -d, --domain String        Main domain to be tested. When set, it OVERRIDES the "doamin" parameter from  
+                             the pages.json file.                                                          
+  -a, --auth String:String   username:password for the http authentication. When set, it OVERRIDES the     
+                             "authenticate" parameter from the pages.json file.                            
+  -e, --headless Boolean     Set Puppeteer to run in the headless mode. When set, it OVERRIDES the         
+                             "headless" parameter from the setup.json file.                                
+  -p, --pages String         The path to the pages.json file. Default option uses pages.json from the root 
+                             of the project.                                                               
 
-  -h, --help               Print out helpful information.                                                
-  -l, --loglevel number    Log level. Default 0                                                          
-                           0=Silent, 1=Important only, 2=All.                                            
-  -d, --domain String      Main domain to be tested. It is concatenated of the beginning of the each     
-                           "url" from the pages.json file. This parameter OVERRIDES the "doamin"         
-                           parameter from the pages.json file.                                           
-  -e, --headless Boolean   Set Puppeteer to run in the headless mode. Default uses the "headless"        
-                           parameter from the setup.json file. This parameter OVERRIDES the "headless"   
-                           parameter from the pages.json file.                                           
-  -p, --pages String       The path to the pages.json file. Default option uses pages.json from the root 
-                           of the project. 
 ```
 
 ## Config the __`setup.json`__
@@ -124,6 +123,10 @@ Actions will follow the order:
 ```
 {
 	"domain": "http://www.yoursupercoolsite.com",
+	"authenticate": {
+		"username": null,
+		"password": null
+	},
 	"pages": [
 		{ "url": "/", "click": ["#mainbutton"]},
 		{ "url": "/?complex-selector", "click": [".menu-secondary > ul > li:nth-child(2) > .link"]},

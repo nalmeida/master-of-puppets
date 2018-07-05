@@ -23,15 +23,18 @@ var pages;
 var logLevel;
 var urlsToTest;
 var autoScroll;
+var domainConfig;
 var headlessConfig;
+var authConfig;
 
 var init = function(commandLineObject){
 
 	util.logLevel = logLevel = !isNaN(commandLineObject.loglevel) ? commandLineObject.loglevel : 0;
 	
 	var setupFile = commandLineObject.pages || 'setup.json';
-	var domainConfig = commandLineObject.domain || undefined;
-	var headlessConfig = commandLineObject.headless || undefined;
+		domainConfig = commandLineObject.domain || undefined;
+		headlessConfig = commandLineObject.headless || undefined;
+		authConfig = commandLineObject.auth || undefined;
 
 
 	setup = readJSON(setupFile);
@@ -50,6 +53,10 @@ var init = function(commandLineObject){
 		else if(headlessConfig.toLowerCase() === 'true') headlessConfig = true;
 
 		setup.puppeteer.launch.headless = headlessConfig;
+	}
+	if(authConfig != undefined) {
+		authenticateUser = authConfig.split(':')[0];
+		authenticatePass = authConfig.split(':')[1];
 	}
 
 	var tmpArr = [];
@@ -181,10 +188,19 @@ const captureScreenshots = async () => {
 const sections = [
 	{
 		header: 'Master of Puppets Screnshot',
-		content: 'Generates screenshots from a page list using Puppeteer and Chromium'
+		content: 'Generates screenshots from a page list using Puppeteer and Chromium.'
 	},
 	{
-		header: 'Options',
+    header: 'Synopsis',
+    content: [
+      '$ node screenshot <options>\n',
+      '$ node screenshot {italic --help}\n',
+      '$ node screenshot {italic --loglevel 1} {italic --headless false} {italic --pages anotherfile.json} {italic --domanin http://www.myanotherdomain.com} {italic --auth myuser:MyP4ssw0rd}\n',
+      '$ node screenshot {italic -l 1} {italic -h false} {italic -p anotherfile.json} {italic -d http://www.myanotherdomain.com} {italic -a myuser:MyP4ssw0rd}'
+    ]
+  },
+	{
+		header: 'Options List',
 		optionList: [
 			{
 				name: 'help',
@@ -194,7 +210,7 @@ const sections = [
 			{
 				name: 'loglevel',
 				alias: 'l',
-				typeLabel: '{underline number}',
+				typeLabel: '{underline Number}',
 				description: 'Log level. {italic Default 0}\n0=Silent, 1=Important only, 2=All.',
 				defaultOption: 0
 			},
@@ -202,13 +218,19 @@ const sections = [
 				name: 'domain',
 				alias: 'd',
 				typeLabel: '{underline String}',
-				description: 'Main domain to be tested. It is concatenated of the beginning of the each "url" from the {italic pages.json} file. This parameter {underline OVERRIDES} the "doamin" parameter from the {italic pages.json} file.'
+				description: 'Main domain to be tested. When set, it {underline OVERRIDES} the "doamin" parameter from the {italic pages.json} file.'
+			},
+			{
+				name: 'auth',
+				alias: 'a',
+				typeLabel: '{underline String}:{underline String}',
+				description: '{underline username}:{underline password} for the http authentication. When set, it {underline OVERRIDES} the "authenticate" parameter from the {italic pages.json} file.'
 			},
 			{
 				name: 'headless',
 				alias: 'e',
 				typeLabel: '{underline Boolean}',
-				description: 'Set Puppeteer to run in the headless mode. Default uses the "headless" parameter from the {italic setup.json} file. This parameter {underline OVERRIDES} the "headless" parameter from the {italic pages.json} file.'
+				description: 'Set Puppeteer to run in the headless mode. When set, it {underline OVERRIDES} the "headless" parameter from the {italic setup.json} file.'
 			},
 			{
 				name: 'pages',
@@ -225,6 +247,7 @@ const optionDefinitions = [
 	{ name: 'help', alias: 'h' },
 	{ name: 'loglevel', alias: 'l', type: Number },
 	{ name: 'domain', alias: 'd', type: String},
+	{ name: 'auth', alias: 'a', type: String},
 	{ name: 'headless', alias: 'e', type: String},
 	{ name: 'pages', alias: 'p', type: String}
 ]
