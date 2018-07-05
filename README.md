@@ -159,7 +159,7 @@ Inside the "timestamp" folder, it creates a folder structure for each "device" n
 
 It is mandatory to set a `--base` **and** `--compare` folder and they must be the "timestamp" folder so, the script will search for the images in the "device" child folders.
 
-In order to make easier to use the compare de compare CLI, you can rename your "timestamp" folder to a easier name do recall such as "production" ou "staging". E.g.:
+In order to make easier to use the compare CLI, you can rename your "timestamp" folder to a easier name do recall such as "production" and "staging". E.g.:
 
 ```
 ./screenshots/production/
