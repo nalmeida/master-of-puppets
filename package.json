@@ -3,11 +3,14 @@
   "version": "1.0.0",
   "description": "",
   "main": "screenshot.js",
+  "engines": {
+    "node": ">=9.6.1"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "",
+  "author": "Nicholas Almeida",
   "license": "ISC",
   "dependencies": {
     "command-line-args": "^5.0.2",
