@@ -20,20 +20,31 @@ var setup;
 var pages;
 var logLevel;
 var urlsToTest;
+var autoScroll;
+var headlessConfig;
 
 var init = function(commandLineObject){
 
 	util.logLevel = logLevel = !isNaN(commandLineObject.loglevel) ? commandLineObject.loglevel : 0;
 	
 	var setupFile = commandLineObject.pages || 'setup.json';
-	var domainConfig = commandLineObject.domain || false;
+	var domainConfig = commandLineObject.domain || undefined;
+	var headlessConfig = commandLineObject.headless || undefined;
+
 
 	setup = readJSON(setupFile);
+	autoScroll = setup.autoScroll;
 	pages = readJSON(setup.pages);
 		urlsToTest = pages.pages;
 
-	if(domainConfig) {
+	if(domainConfig != undefined) {
 		pages.domain = domainConfig;
+	}
+	if(headlessConfig != undefined) {
+		if(headlessConfig.toLowerCase() === 'false') headlessConfig = false;
+		else if(headlessConfig.toLowerCase() === 'true') headlessConfig = true;
+
+		setup.puppeteer.launch.headless = headlessConfig;
 	}
 
 	var tmpArr = [];
@@ -58,7 +69,8 @@ var init = function(commandLineObject){
 
 var startTime = new Date();
 
-const autoScroll = function(page){
+const scrollToBottom = function(page){
+	// from: https://github.com/GoogleChrome/puppeteer/issues/844#issuecomment-338916722
     return page.evaluate(() => {
         return new Promise((resolve, reject) => {
             var totalHeight = 0;
@@ -120,7 +132,9 @@ const captureScreenshots = async () => {
 
 			await page.goto(fullUrl);
 
-			await autoScroll(page);
+			if(autoScroll) {
+				await scrollToBottom(page);
+			}
 
 			if(click) {
 				for (selector in click) {
@@ -179,7 +193,13 @@ const sections = [
 				name: 'domain',
 				alias: 'd',
 				typeLabel: '{underline String}',
-				description: 'Main domain to be tested. It is concatenated of the beginning of the each "url" from the {italic pages.json} file. This parameter {underline OVERRIDES} the "doamin" parameter from the {italic pages.json} file'
+				description: 'Main domain to be tested. It is concatenated of the beginning of the each "url" from the {italic pages.json} file. This parameter {underline OVERRIDES} the "doamin" parameter from the {italic pages.json} file.'
+			},
+			{
+				name: 'headless',
+				alias: 'e',
+				typeLabel: '{underline Boolean}',
+				description: 'Set Puppeteer to run in the headless mode. {italic Default uses the headless parameter from the setup.json file}.\nThis parameter {underline OVERRIDES} the "headless" parameter from the {italic pages.json} file.'
 			},
 			{
 				name: 'pages',
@@ -196,6 +216,7 @@ const optionDefinitions = [
 	{ name: 'help', alias: 'h' },
 	{ name: 'loglevel', alias: 'l', type: Number },
 	{ name: 'domain', alias: 'd', type: String},
+	{ name: 'headless', alias: 'e', type: String},
 	{ name: 'pages', alias: 'p', type: String}
 ]
 const options = commandLineArgs(optionDefinitions);

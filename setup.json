@@ -1,5 +1,6 @@
 {
 	"screenshotsFolder": "screenshots",
+	"autoScroll": true,
 	"pages": "pages.json",
 	"puppeteer": {
 		"launch": {
