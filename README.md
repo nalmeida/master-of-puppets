@@ -4,7 +4,17 @@
 ╩ ╩╩ ╩╚═╝ ╩ ╚═╝╩╚═  ╚═╝╚    ╩  ╚═╝╩  ╩  ╚═╝ ╩ ╚═╝
 ```
 
-[[_TOC_]]
+- [Install](#install)
+- [Taking screenshots](#taking-screenshots)
+	- [screenshot CLI Options](#screenshot-cli-options)
+	- [Config the __`setup.json`__](#config-the-__setupjson__)
+		- [Parameters](#parameters)
+			- [Sample file:](#sample-file)
+	- [Config the __`pages.json`__](#config-the-__pagesjson__)
+		- [Parameters](#parameters-1)
+			- [Sample file:](#sample-file-1)
+- [Comparing screenshots](#comparing-screenshots)
+	- [compare CLI Options](#compare-cli-options)
 
 # Install
 
