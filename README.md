@@ -32,7 +32,7 @@ $ npm install
   -h, --help                 Print out helpful information.                                                
   -l, --loglevel Number      Log level. Default 0                                                          
                              0=Silent, 1=Important only, 2=All.                                            
-  -d, --domain String        Main domain to be tested. When set, it OVERRIDES the "doamin" parameter from  
+  -d, --domain String        Main domain to be tested. When set, it OVERRIDES the "domain" parameter from  
                              the pages.json file.                                                          
   -a, --auth String:String   username:password for the http authentication. When set, it OVERRIDES the     
                              "authenticate" parameter from the pages.json file.                            

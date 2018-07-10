@@ -218,7 +218,7 @@ const sections = [
 				name: 'domain',
 				alias: 'd',
 				typeLabel: '{underline String}',
-				description: 'Main domain to be tested. When set, it {underline OVERRIDES} the "doamin" parameter from the {italic pages.json} file.'
+				description: 'Main domain to be tested. When set, it {underline OVERRIDES} the "domain" parameter from the {italic pages.json} file.'
 			},
 			{
 				name: 'auth',
