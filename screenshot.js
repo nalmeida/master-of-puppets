@@ -195,7 +195,7 @@ const sections = [
 		content: [
 			'$ node screenshot <options>\n',
 			'$ node screenshot {italic --help}\n',
-			'$ node screenshot {italic --loglevel 1} {italic --headless false} {italic --pages anotherfile.json} {italic --domanin http://www.myanotherdomain.com} {italic --auth myuser:MyP4ssw0rd}\n',
+			'$ node screenshot {italic --loglevel 1} {italic --headless false} {italic --pages anotherfile.json} {italic --domain http://www.myanotherdomain.com} {italic --auth myuser:MyP4ssw0rd}\n',
 			'$ node screenshot {italic -l 1} {italic -h false} {italic -p anotherfile.json} {italic -d http://www.myanotherdomain.com} {italic -a myuser:MyP4ssw0rd}'
 		]
 	},
