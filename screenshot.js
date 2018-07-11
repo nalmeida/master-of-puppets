@@ -134,9 +134,7 @@ const captureScreenshots = async () => {
 			var now = (util.logLevel == 1 ? '\t': '') + util.time();
 			var fileName = i + '_' + filenamify(slug);
 			var deviceFolder = screenshotsFolder + '/' + filenamify(devicesToEmulate[device].name.toLowerCase().replace(/ /g,'-'));
-			var file = `${deviceFolder}/${fileName}.jpg`;
-
-			mkdir(deviceFolder);
+			var file = `${deviceFolder}/${fileName}.jpg`;			
 
 			if(logLevel == 2) {
 				log('URL:\t' + fullUrl);
@@ -146,29 +144,36 @@ const captureScreenshots = async () => {
 
 			await page.emulate(devicesToEmulate[device]);
 
-			await page.goto(fullUrl);
+			try {
+				await page.goto(fullUrl);
 
-			if(autoScroll) {
-				await scrollToBottom(page);
-			}
-
-			if(click) {
-				for (selector in click) {
-					await page.click(click[selector]);
+				if(autoScroll) {
+					await scrollToBottom(page);
 				}
-			}
-			if(waitFor) {
-				await page.waitFor(waitFor)
-			}
-			await page.mouse.move(0,0);
-			await page.screenshot({path: file, fullPage: true});
 
-			if(logLevel == 2) {
-				log('IMG:\t' + file);
-			}
-			
-			if(logLevel == 1) {
-				endLogRow(now + '\t' + fullUrl + '\t' + file, lineCount);  
+				if(click) {
+					for (selector in click) {
+						await page.click(click[selector]);
+					}
+				}
+				if(waitFor) {
+					await page.waitFor(waitFor)
+				}
+				await page.mouse.move(0,0);
+
+				mkdir(deviceFolder);
+				await page.screenshot({path: file, fullPage: true});
+
+				if(logLevel == 2) {
+					log('IMG:\t' + file);
+				}
+				
+				if(logLevel == 1) {
+					endLogRow(now + '\t' + fullUrl + '\t' + file, lineCount);  
+				}
+
+			} catch(e) {
+				console.log('\n', e);
 			}
 
 		}
