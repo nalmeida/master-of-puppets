@@ -161,9 +161,9 @@ Inside the "timestamp" folder, it creates a folder structure for each "device" n
 
 ```
 ./screenshots/2018.07.05-16.34.929/
-              |– chrome-1280/
-              |– chrome-1024/
-              |– iphone-6/
+              ├── chrome-1280/
+              ├── chrome-1024/
+              ├── iphone-6/
               ...
 ```
 
@@ -173,13 +173,13 @@ In order to make easier to use the compare CLI, you can rename your "timestamp" 
 
 ```
 ./screenshots/production/
-              |– chrome-1280/
-              |– chrome-1024/
-              |– iphone-6/
+              ├── chrome-1280/
+              ├── chrome-1024/
+              └── iphone-6/
 ./screenshots/staging/
-              |– chrome-1280/
-              |– chrome-1024/
-              |– iphone-6/
+              ├── chrome-1280/
+              ├── chrome-1024/
+              └── iphone-6/
 ```
 
 
