@@ -115,8 +115,17 @@ const captureScreenshots = async () => {
 	
 	for (var i=0; i < urlsToTest.length; i++) {
 		
-		var browser = await puppeteer.launch(setup.puppeteer.launch)
-		var page = await browser.newPage();
+		try {
+			var browser = await puppeteer.launch(setup.puppeteer.launch)
+		} catch(e) {
+			console.log('\n Error: puppeteer.launch\n', e);
+		}
+
+		try {
+			var page = await browser.newPage();
+		} catch(e) {
+			console.log('\n Error: browser.newPage\n', e);
+		}
 			if(authenticateUser != null && authenticatePass != null) {
 				page.authenticate({username:authenticateUser, password: authenticatePass})
 			}
@@ -142,43 +151,72 @@ const captureScreenshots = async () => {
 				newLogRow(now + '\t' + fullUrl)	;
 			}
 
-			await page.emulate(devicesToEmulate[device]);
-
+			try {
+				await page.emulate(devicesToEmulate[device]);
+			} catch(e) {
+				console.log('\n Error: page.emulate\n', e);
+			}
+			
 			try {
 				await page.goto(fullUrl);
+			} catch(e) {
+				console.log('\n Error: page.goto\n', e);
+			}
 
-				if(autoScroll) {
+			if(autoScroll) {
+				try {
 					await scrollToBottom(page);
+				} catch(e) {
+					console.log('\n Error: scrollToBottom\n', e);
 				}
 
-				if(click) {
-					for (selector in click) {
+			}
+
+			if(click) {
+				for (selector in click) {
+					try {
 						await page.click(click[selector]);
+					} catch(e) {
+						console.log('\n Error: page.click\n', e);
 					}
 				}
-				if(waitFor) {
-					await page.waitFor(waitFor)
+			}
+			if(waitFor) {
+				try {
+					await page.waitFor(waitFor);
+				} catch(e) {
+					console.log('\n Error: page.waitFor\n', e);
 				}
+			}
+
+			try {
 				await page.mouse.move(0,0);
-
-				mkdir(deviceFolder);
-				await page.screenshot({path: file, fullPage: true});
-
-				if(logLevel == 2) {
-					log('IMG:\t' + file);
-				}
-				
-				if(logLevel == 1) {
-					endLogRow(now + '\t' + fullUrl + '\t' + file, lineCount);  
-				}
-
 			} catch(e) {
-				console.log('\n', e);
+				console.log('\n Error: page.mouse.move\n', e);
+			}
+
+			mkdir(deviceFolder);
+			try {
+				await page.screenshot({path: file, fullPage: true});
+			} catch(e) {
+				console.log('\n Error: page.screenshot\n', e);
+			}
+
+			if(logLevel == 2) {
+				log('IMG:\t' + file);
+			}
+			
+			if(logLevel == 1) {
+				endLogRow(now + '\t' + fullUrl + '\t' + file, lineCount);  
 			}
 
 		}
 
-		await browser.close();
+		try {
+			await browser.close();
+		} catch(e) {
+			console.log('\n Error: browser.close\n', e);
+		}
 	}
 
 
