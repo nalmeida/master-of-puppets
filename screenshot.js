@@ -118,13 +118,13 @@ const captureScreenshots = async () => {
 		try {
 			var browser = await puppeteer.launch(setup.puppeteer.launch)
 		} catch(e) {
-			console.log('\n Error: puppeteer.launch\n', e);
+			console.error('\n Error: puppeteer.launch\n', e);
 		}
 
 		try {
 			var page = await browser.newPage();
 		} catch(e) {
-			console.log('\n Error: browser.newPage\n', e);
+			console.error('\n Error: browser.newPage\n', e);
 		}
 			if(authenticateUser != null && authenticatePass != null) {
 				page.authenticate({username:authenticateUser, password: authenticatePass})
@@ -154,20 +154,20 @@ const captureScreenshots = async () => {
 			try {
 				await page.emulate(devicesToEmulate[device]);
 			} catch(e) {
-				console.log('\n Error: page.emulate\n', e);
+				console.error('\n Error: page.emulate\n', e);
 			}
 			
 			try {
 				await page.goto(fullUrl);
 			} catch(e) {
-				console.log('\n Error: page.goto\n', e);
+				console.error('\n Error: page.goto\n', e);
 			}
 
 			if(autoScroll) {
 				try {
 					await scrollToBottom(page);
 				} catch(e) {
-					console.log('\n Error: scrollToBottom\n', e);
+					console.error('\n Error: scrollToBottom\n', e);
 				}
 
 			}
@@ -177,7 +177,7 @@ const captureScreenshots = async () => {
 					try {
 						await page.click(click[selector]);
 					} catch(e) {
-						console.log('\n Error: page.click\n', e);
+						console.error('\n Error: page.click\n', e);
 					}
 				}
 			}
@@ -185,21 +185,21 @@ const captureScreenshots = async () => {
 				try {
 					await page.waitFor(waitFor);
 				} catch(e) {
-					console.log('\n Error: page.waitFor\n', e);
+					console.error('\n Error: page.waitFor\n', e);
 				}
 			}
 
 			try {
 				await page.mouse.move(0,0);
 			} catch(e) {
-				console.log('\n Error: page.mouse.move\n', e);
+				console.error('\n Error: page.mouse.move\n', e);
 			}
 
 			mkdir(deviceFolder);
 			try {
 				await page.screenshot({path: file, fullPage: true});
 			} catch(e) {
-				console.log('\n Error: page.screenshot\n', e);
+				console.error('\n Error: page.screenshot\n', e);
 			}
 
 			if(logLevel == 2) {

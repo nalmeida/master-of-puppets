@@ -65,11 +65,15 @@ async function getDiff(fullBaseList) {
 
 		try {
 			fileA = await fs.readFile(baseFilePath);
-		} catch(e) {}
+		} catch(e) {
+			console.error('\n Error: fileA fs.readFile\n', e);
+		}
 
 		try {
 			fileB = await fs.readFile(compareFilePath);
-		} catch(e) {}
+		} catch(e) {
+			console.error('\n Error: fileB fs.readFile\n', e);
+		}
 
 		// console.log(Boolean(fileB) + ' ' + baseFilePath + ' → ' + compareFilePath + '\n')
 
@@ -80,11 +84,15 @@ async function getDiff(fullBaseList) {
 			continue;
 		}
 
-		const data = await compareImages(
-			fileA,
-			fileB,
-			options
-		);
+		try {
+			var data = await compareImages(
+				fileA,
+				fileB,
+				options
+			);
+		} catch(e) {
+			console.error('\n Error: compareImages\n', e);
+		}
 
 		var diffFile = addSlash(destinationFolder) + addSlash(resFolder) + fileName;
 
@@ -95,7 +103,12 @@ async function getDiff(fullBaseList) {
 		if(dryRun === false) {
 			mkdir(destinationFolder);
 			mkdir(addSlash(destinationFolder) + addSlash(resFolder))
-			await fs.writeFile(diffFile, data.getBuffer());
+
+			try {
+				await fs.writeFile(diffFile, data.getBuffer());
+			} catch(e) {
+				console.error('\n Error: fs.writeFile\n', e);
+			}
 		}
 
 	}
