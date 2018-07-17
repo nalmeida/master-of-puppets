@@ -25,20 +25,26 @@ var urlsToTest;
 var autoScroll;
 var domainConfig;
 var headlessConfig;
+var pagesConfig;
 var authConfig;
 
 var init = function(commandLineObject){
 
 	util.logLevel = logLevel = !isNaN(commandLineObject.loglevel) ? commandLineObject.loglevel : 0;
 	
-	var setupFile = commandLineObject.pages || 'setup.json';
+	var setupFile = 'setup.json';
 		domainConfig = commandLineObject.domain || undefined;
 		headlessConfig = commandLineObject.headless || undefined;
 		authConfig = commandLineObject.auth || undefined;
+		pagesConfig = commandLineObject.pages || undefined;
 
 
 	setup = readJSON(setupFile);
 		autoScroll = setup.autoScroll;
+
+	if(pagesConfig != undefined) {
+		setup.pages = pagesConfig;
+	}
 
 	pages = readJSON(setup.pages);
 		urlsToTest = pages.pages;
