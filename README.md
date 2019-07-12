@@ -26,20 +26,24 @@ $ npm install
 
 # Taking screenshots
 
+```
+$ node screenshot.js
+```
+
 ## screenshot CLI Options
 
 ```
-  -h, --help                 Print out helpful information.                                                
-  -l, --loglevel Number      Log level. Default 0                                                          
-                             0=Silent, 1=Important only, 2=All.                                            
-  -d, --domain String        Main domain to be tested. When set, it OVERRIDES the "domain" parameter from  
-                             the pages.json file.                                                          
-  -a, --auth String:String   username:password for the http authentication. When set, it OVERRIDES the     
-                             "authenticate" parameter from the pages.json file.                            
-  -e, --headless Boolean     Set Puppeteer to run in the headless mode. When set, it OVERRIDES the         
-                             "headless" parameter from the setup.json file.                                
-  -p, --pages String         The path to the pages.json file. Default option uses pages.json from the root 
-                             of the project.                                                               
+  -h, --help                 Print out helpful information.
+  -l, --loglevel Number      Log level. Default 0
+                             0=Silent, 1=Important only, 2=All.
+  -d, --domain String        Main domain to be tested. When set, it OVERRIDES the "domain" parameter from
+                             the pages.json file.
+  -a, --auth String:String   username:password for the http authentication. When set, it OVERRIDES the
+                             "authenticate" parameter from the pages.json file.
+  -e, --headless Boolean     Set Puppeteer to run in the headless mode. When set, it OVERRIDES the
+                             "headless" parameter from the setup.json file.
+  -p, --pages String         The path to the pages.json file. Default option uses pages.json from the root
+                             of the project.
 
 ```
 
@@ -89,7 +93,7 @@ $ npm install
 			}
 		]
 	},
-	
+
 	"diffFolder": "diff",
 	"resembleOptions": {
 		"output": {
@@ -155,7 +159,7 @@ Actions will follow the order:
 
 The `compare.js` script compares two image folders, generates the diff images inside a folder. The diff destination folder can be set inside the `setup.json` file by the `diffFolder` parameter.
 
-When `screenshot.js` runs, it creates a folder inside `screenshots` using a timestamp format (YYYY.MM.DD-HH.MM.SSSS) to avoid folder naming conflic and overriding. E.g.: `2018.07.05-16.34.929`. 
+When `screenshot.js` runs, it creates a folder inside `screenshots` using a timestamp format (YYYY.MM.DD-HH.MM.SSSS) to avoid folder naming conflic and overriding. E.g.: `2018.07.05-16.34.929`.
 
 Inside the "timestamp" folder, it creates a folder structure for each "device" name. E.g.:
 
@@ -187,14 +191,18 @@ In order to make easier to use the compare CLI, you can rename your "timestamp" 
 ## compare CLI Options
 
 ```
+$ node compare.js
+```
+
+```
 Options List
 
-  -h, --help              Print out helpful information.                                  
-  -l, --loglevel Number   Log level. Defalut 0                                            
-                          0=Silent, 1=Important only, 2=All.                              
-  -b, --base String       Path to the folder used as the base for comparison.             
-  -c, --compare String    Path to the folder used for comparison against the base folder. 
-  -d, --dry-run           Compares the images without saving the diff files.  
+  -h, --help              Print out helpful information.
+  -l, --loglevel Number   Log level. Defalut 0
+                          0=Silent, 1=Important only, 2=All.
+  -b, --base String       Path to the folder used as the base for comparison.
+  -c, --compare String    Path to the folder used for comparison against the base folder.
+  -d, --dry-run           Compares the images without saving the diff files.
 ```
 
 
