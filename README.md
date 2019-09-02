@@ -55,7 +55,7 @@ $ node screenshot.js
  - `autoScroll` <[Boolean]> Option for Puppeteer to scroll automatically to the bottom of the page before screenshot. Useful for scroll incrementally through a page in order to deal with lazy loaded elements. It scrolls in 100px every 100ms until the bottom of the page. _Default_ __```true```__
   - `pages` <[string]> Path and file name of pages list. _Default_ __```pages.json```__
   - `puppeteer` <[Object]> <[Puppeteer]> config object. _Default_:
-  	- `launch` <[boolean]> Whether to to use or not the headless mode. _Default_ __```true```__
+  	- `launch` <[boolean]> Whether to use or not the headless mode. _Default_ __```true```__
   	- `emulate` <[Array]> Array of objects following the Puppeteer [`DeviceDescriptors.js`](https://github.com/GoogleChrome/puppeteer/blob/master/DeviceDescriptors.js) standards. In order to test different resolutions emulating the same browser, just add the width in the `name` parameter. E.g.: `"name": "Chrome 1024"`.
   - `diffFolder` <[string]> Destination folder for the comparison image files. _Default_ __```screenshots/_diff```__
   - `resembleOptions` <[Object]> [`Resemblejs`](https://github.com/HuddleEng/Resemble.js#nodejs) configuration options.
