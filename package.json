@@ -18,7 +18,7 @@
     "command-line-usage": "^5.0.4",
     "filenamify": "^2.0.0",
     "mz": "^2.7.0",
-    "npm": "^6.11.2",
+    "npm": "^6.14.6",
     "ora": "^2.1.0",
     "puppeteer": "^1.19.0",
     "resemblejs": "^3.2.2"
