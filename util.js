@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const filenamify = require('filenamify');
 const ora = require('ora');
-	const spinner = ora();
+const spinner = ora();
 
 module.exports = {
 	logLevel: 0,
@@ -73,7 +73,7 @@ module.exports = {
 	mkdir: function(dir) {
 		if (!fs.existsSync(dir)) {
 			fs.mkdirSync(dir);
-		} 
+		}
 	},
 	rm: function(path) {
 		if( fs.existsSync(path) ) {
