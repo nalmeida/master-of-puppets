@@ -2,6 +2,7 @@ const commandLineArgs = require('command-line-args');
 const commandLineUsage = require('command-line-usage');
 const compareImages = require("resemblejs/compareImages");
 
+var path = require("path");
 const fs = require("mz/fs");
 const util = require('./util.js');
 	const log = util.log;
@@ -28,8 +29,8 @@ const init = function(commandLineObject) {
 
 	dryRun = typeof(commandLineObject['dry-run']) == 'object' ?  true : false;
 
-	baseFolder = addSlash(commandLineObject.base);
-	compareFolder = addSlash(commandLineObject.compare);
+	baseFolder = path.resolve(addSlash(commandLineObject.base));
+	compareFolder = path.resolve(addSlash(commandLineObject.compare));
 
 	var fullBaseList = (getRecursiveFileList(addSlash(commandLineObject.base)))
 	// var fullCompareList = (getRecursiveFileList(addSlash(commandLineObject.compare)))
@@ -53,7 +54,7 @@ async function getDiff(fullBaseList) {
 
 	for (var i=0; i<fullBaseList.length; i++) {
 
-		var baseFilePath = fullBaseList[i];
+		var baseFilePath = path.resolve(fullBaseList[i]);
 		var compareFilePath = baseFilePath.replace(baseFolder, compareFolder);
 
 		var fileName = baseFilePath.split('/').slice(-1).toString();
