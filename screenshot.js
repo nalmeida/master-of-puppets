@@ -2,6 +2,7 @@ const fs = require('fs');
 const puppeteer = require('puppeteer');
 const commandLineArgs = require('command-line-args');
 const commandLineUsage = require('command-line-usage');
+const fullScreenshot = require("fullpage-puppeteer-screenshot");
 
 const util = require('./util.js');
 	const timeStamp = util.timeStamp;
@@ -12,9 +13,48 @@ const util = require('./util.js');
 	const toHHMMSS = util.toHHMMSS;
 	const filenamify = util.filenamify;
 	const newLogRow = util.newLogRow;
-	const updateLogRow = util.updateLogRow;
 	const endLogRow = util.endLogRow;
 	const findDuplicates = util.findDuplicates;
+
+	// Full list from: https://www.bannerbear.com/blog/ways-to-speed-up-puppeteer-screenshots/
+	const minimal_args = [
+		'--autoplay-policy=user-gesture-required',
+		'--disable-background-networking',
+		'--disable-background-timer-throttling',
+		'--disable-backgrounding-occluded-windows',
+		'--disable-breakpad',
+		'--disable-client-side-phishing-detection',
+		'--disable-component-update',
+		'--disable-default-apps',
+		'--disable-dev-shm-usage',
+		'--disable-domain-reliability',
+		'--disable-extensions',
+		'--disable-features=AudioServiceOutOfProcess',
+		'--disable-hang-monitor',
+		'--disable-ipc-flooding-protection',
+		'--disable-notifications',
+		'--disable-offer-store-unmasked-wallet-cards',
+		'--disable-popup-blocking',
+		'--disable-print-preview',
+		'--disable-prompt-on-repost',
+		'--disable-renderer-backgrounding',
+		'--disable-setuid-sandbox',
+		'--disable-speech-api',
+		'--disable-sync',
+		'--hide-scrollbars',
+		'--ignore-gpu-blacklist',
+		'--metrics-recording-only',
+		'--mute-audio',
+		'--no-default-browser-check',
+		'--no-first-run',
+		'--no-pings',
+		'--no-sandbox',
+		'--no-zygote',
+		'--password-store=basic',
+		'--use-gl=swiftshader',
+		'--use-mock-keychain',
+		'--disable-web-security', // https://github.com/puppeteer/puppeteer/issues/4053
+	];
 
 var setup;
 var authenticateUser;
@@ -27,6 +67,10 @@ var domainConfig;
 var headlessConfig;
 var pagesConfig;
 var authConfig;
+
+function wait (ms) {
+  return new Promise(resolve => setTimeout(() => resolve(), ms));
+}
 
 var init = function(commandLineObject){
 
@@ -65,6 +109,8 @@ var init = function(commandLineObject){
 		authenticatePass = authConfig.split(':')[1];
 	}
 
+	setup.puppeteer.launch.args = minimal_args;
+
 	var tmpArr = [];
 
 	for (var i = 0; i < urlsToTest.length; i++) {
@@ -86,27 +132,6 @@ var init = function(commandLineObject){
 }
 
 var startTime = new Date();
-
-const scrollToBottom = function(page){
-	// from: https://github.com/GoogleChrome/puppeteer/issues/844#issuecomment-338916722
-	return page.evaluate(() => {
-		return new Promise((resolve, reject) => {
-			var totalHeight = 0;
-			var distance = 100;
-			var timer = setInterval(() => {
-				var scrollHeight = document.body.scrollHeight;
-				window.scrollBy(0, distance);
-				totalHeight += distance;
-
-				if(totalHeight >= scrollHeight){
-					window.scrollBy(0, 0);
-					clearInterval(timer);
-					resolve();
-				}
-			}, 100);
-		})
-	});
-}
 
 const captureScreenshots = async () => {
 
@@ -164,14 +189,42 @@ const captureScreenshots = async () => {
 			}
 			
 			try {
-				await page.goto(fullUrl);
+				await page.goto(fullUrl, {waitUntil: 'networkidle0'});
 			} catch(e) {
 				console.error('\n Error: page.goto\n', e);
 			}
 
 			if(autoScroll) {
 				try {
-					await scrollToBottom(page);
+					
+					const bodyHandle = await page.$('body');
+					const { height } = await bodyHandle.boundingBox();
+					await bodyHandle.dispose();
+
+					// Scroll one viewport at a time, pausing to let content load
+					const viewportHeight = page.viewport().height;
+					let viewportIncr = 0;
+					while (viewportIncr + viewportHeight < height) {
+						await page.evaluate(_viewportHeight => {
+							window.scrollBy(0, _viewportHeight);
+						}, viewportHeight);
+						await wait(700);
+						viewportIncr = viewportIncr + viewportHeight;
+					}
+
+					// Scroll back to top
+					await page.evaluate(_ => {
+						window.scrollTo(0, 0);
+					});
+
+					// Some extra delay to let images load
+					await wait(1000);
+
+
+					await page.evaluate(_ => {
+						window.scrollTo(0, 0);
+					});
+
 				} catch(e) {
 					console.error('\n Error: scrollToBottom\n', e);
 				}
@@ -203,7 +256,10 @@ const captureScreenshots = async () => {
 
 			mkdir(deviceFolder);
 			try {
-				await page.screenshot({path: file, fullPage: true});
+				// await page.screenshot({path: file, fullPage: true});
+				await fullScreenshot(page, {
+					path: file
+				});
 			} catch(e) {
 				console.error('\n Error: page.screenshot\n', e);
 			}
