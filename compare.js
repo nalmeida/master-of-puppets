@@ -8,14 +8,12 @@ const util = require('./util.js');
 	const readJSON = util.readJSON;
 	const mkdir = util.mkdir;
 	const rm = util.rm;
-	const isFolder = util.isFolder;
 	const addSlash = util.addSlash;
 	const getRecursiveFileList = util.getRecursiveFileList;
 
 var setup;
 var logLevel;
 var diffFolder;
-var toCompare;
 var baseFolder;
 var compareFolder;
 var dryRun;
