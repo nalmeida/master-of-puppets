@@ -19,7 +19,7 @@
     "filenamify": "4.3.0",
     "fullpage-puppeteer-screenshot": "^1.0.1",
     "mz": "^2.7.0",
-    "npm": "^8.2.0",
+    "npm": "^8.11.0",
     "ora": "^5.4.1",
     "puppeteer": "^10.4.0",
     "resemblejs": "^4.0.0",
