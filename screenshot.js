@@ -1,23 +1,21 @@
-const fs = require('fs');
 const puppeteer = require('puppeteer');
 const commandLineArgs = require('command-line-args');
 const commandLineUsage = require('command-line-usage');
-// Removed dependency on fullpage-puppeteer-screenshot
+const util = require('./helpers/util.js');
 
-const util = require('./util.js');
-const timeStamp = util.timeStamp;
-const mkdir = util.mkdir;
-const readJSON = util.readJSON;
-const banner = util.banner;
-const log = util.log;
-const toHHMMSS = util.toHHMMSS;
-const filenamify = util.filenamify;
-const newLogRow = util.newLogRow;
-const endLogRow = util.endLogRow;
-const findDuplicates = util.findDuplicates;
+const {
+	timeStamp,
+	mkdir,
+	readJSON,
+	log,
+	filenamify,
+	newLogRow,
+	endLogRow,
+	findDuplicates,
+} = util;
 
 // Full list from: https://www.bannerbear.com/blog/ways-to-speed-up-puppeteer-screenshots/
-const minimal_args = [
+const minimalArgs = [
 	'--autoplay-policy=user-gesture-required',
 	'--disable-background-networking',
 	'--disable-background-timer-throttling',
@@ -53,314 +51,184 @@ const minimal_args = [
 	'--password-store=basic',
 	'--use-gl=swiftshader',
 	'--use-mock-keychain',
-	// Removed --disable-web-security flag as it's a security risk
 ];
 
-var setup;
-var authenticateUser;
-var authenticatePass;
-var pages;
-var logLevel;
-var urlsToTest;
-var autoScroll;
-var domainConfig;
-var headlessConfig;
-var pagesConfig;
-var authConfig;
+let setup, logLevel, urlsToTest, autoScroll, domainConfig, headlessConfig, authConfig;
 
-function wait(ms) {
-	return new Promise(resolve => setTimeout(() => resolve(), ms));
-}
+const initialize = (commandLineObject) => {
+	logLevel = !isNaN(commandLineObject.loglevel) ? commandLineObject.loglevel : 0;
+	util.logLevel = logLevel;
 
-var init = function (commandLineObject) {
-
-	util.logLevel = logLevel = !isNaN(commandLineObject.loglevel) ? commandLineObject.loglevel : 0;
-
-	var setupFile = 'setup.json';
-	domainConfig = commandLineObject.domain || undefined;
-	headlessConfig = commandLineObject.headless || undefined;
-	authConfig = commandLineObject.auth || undefined;
-	pagesConfig = commandLineObject.pages || undefined;
-
-
-	setup = readJSON(setupFile);
+	setup = readJSON('setup.json');
 	autoScroll = setup.autoScroll;
 
-	if (pagesConfig != undefined) {
-		setup.pages = pagesConfig;
+	domainConfig = commandLineObject.domain;
+	headlessConfig = commandLineObject.headless;
+	authConfig = commandLineObject.auth;
+
+	if (commandLineObject.pages) {
+		setup.pages = commandLineObject.pages;
 	}
 
-	pages = readJSON(setup.pages);
+	const pages = readJSON(setup.pages);
 	urlsToTest = pages.pages;
-	authenticateUser = pages.authenticate.username
-	authenticatePass = pages.authenticate.password
 
-	if (domainConfig != undefined) {
+	if (domainConfig) {
 		pages.domain = domainConfig;
 	}
-	if (headlessConfig != undefined) {
-		if (headlessConfig.toLowerCase() === 'false') headlessConfig = false;
-		else if (headlessConfig.toLowerCase() === 'true') headlessConfig = true;
 
-		setup.puppeteer.launch.headless = headlessConfig;
-	}
-	if (authConfig != undefined) {
-		authenticateUser = authConfig.split(':')[0];
-		authenticatePass = authConfig.split(':')[1];
+	if (headlessConfig) {
+		setup.puppeteer.launch.headless = headlessConfig.toLowerCase() === 'true';
 	}
 
-	setup.puppeteer.launch.args = minimal_args;
-
-	var tmpArr = [];
-
-	for (var i = 0; i < urlsToTest.length; i++) {
-		tmpArr.push(urlsToTest[i].url)
+	if (authConfig) {
+		const [username, password] = authConfig.split(':');
+		setup.authenticate = { username, password };
 	}
 
-	var duplicateUrl = findDuplicates(tmpArr);
-	if (duplicateUrl.length > 0) {
-		console.error('Error: duplicate url found.\n' + (duplicateUrl.join('\r\n')));
+	setup.puppeteer.launch.args = minimalArgs;
+
+	validateUrls(urlsToTest);
+	mkdir(setup.screenshotsFolder);
+	captureScreenshots(pages);
+};
+
+const validateUrls = (urls) => {
+	const duplicateUrls = findDuplicates(urls.map((url) => url.url));
+	if (duplicateUrls.length > 0) {
+		console.error('Error: duplicate URLs found:', duplicateUrls.join('\n'));
 		process.exit(1);
 	}
+};
 
-	if (logLevel == 2) {
-		banner('Starting Screenshot');
-	}
-	mkdir(setup.screenshotsFolder);
-
-	captureScreenshots();
-}
-
-var startTime = new Date();
-
-const captureScreenshots = async () => {
-
-	var screenshotsFolder = setup.screenshotsFolder + '/' + timeStamp();
-
+const captureScreenshots = async (pages) => {
+	const screenshotsFolder = `${setup.screenshotsFolder}/${timeStamp()}`;
 	mkdir(screenshotsFolder);
-	if (logLevel == 2) {
-		log('Creating "' + screenshotsFolder + '" folder\n');
+
+	if (logLevel === 2) {
+		log(`Starting screenshot capture in folder: ${screenshotsFolder}`);
+		log(`Creating folder: ${screenshotsFolder}`);
 	}
 
-	var lineCount = 0;
-
-	for (var i = 0; i < urlsToTest.length; i++) {
-
-		try {
-			var browser = await puppeteer.launch(setup.puppeteer.launch)
-		} catch (e) {
-			console.error('\n Error: puppeteer.launch\n', e);
-		}
+	for (const [index, { url, click, waitFor }] of urlsToTest.entries()) {
+		const fullUrl = `${pages.domain}${url}`;
 
 		try {
-			var page = await browser.newPage();
-		} catch (e) {
-			console.error('\n Error: browser.newPage\n', e);
-		}
-		if (authenticateUser != null && authenticatePass != null) {
-			page.authenticate({ username: authenticateUser, password: authenticatePass })
-		}
+			const browser = await puppeteer.launch(setup.puppeteer.launch);
+			const page = await browser.newPage();
 
-		var slug = urlsToTest[i].url;
-		var fullUrl = pages.domain + slug;
-		var click = pages.pages[i].click;
-		var waitFor = pages.pages[i].waitFor;
-		var devicesToEmulate = setup.puppeteer.emulate;
-
-		for (device in devicesToEmulate) {
-
-			lineCount++;
-
-			var now = (util.logLevel == 1 ? '\t' : '') + util.time();
-			var fileName = i + '_' + filenamify(slug);
-			var deviceFolder = screenshotsFolder + '/' + filenamify(devicesToEmulate[device].name.toLowerCase().replace(/ /g, '-'));
-			var file = `${deviceFolder}/${fileName}.jpg`;
-
-			if (logLevel == 2) {
-				log('URL:\t' + fullUrl);
-			} else if (logLevel == 1) {
-				newLogRow(now + '\t' + fullUrl);
+			if (setup.authenticate) {
+				await page.authenticate(setup.authenticate);
 			}
 
-			try {
-				await page.emulate(devicesToEmulate[device]);
-			} catch (e) {
-				console.error('\n Error: page.emulate\n', e);
-			}
+			for (const device of setup.puppeteer.emulate) {
+				const deviceFolder = `${screenshotsFolder}/${filenamify(device.name.toLowerCase().replace(/ /g, '-'))}`;
+				mkdir(deviceFolder);
 
-			try {
+				const fileName = `${index}_${filenamify(url)}.jpg`;
+				const filePath = `${deviceFolder}/${fileName}`;
+
+				if (logLevel === 2) {
+					log(`Capturing screenshot for: ${fullUrl} on device: ${device.name}`);
+				} else if (logLevel === 1) {
+					newLogRow(`Capturing: ${fullUrl}`);
+				}
+
+				await page.emulate(device);
 				await page.goto(fullUrl, { waitUntil: 'networkidle0' });
-			} catch (e) {
-				console.error('\n Error: page.goto\n', e);
-			}
 
-			if (autoScroll) {
-				try {
-
-					const bodyHandle = await page.$('body');
-					const { height } = await bodyHandle.boundingBox();
-					await bodyHandle.dispose();
-
-					// Scroll one viewport at a time, pausing to let content load
-					const viewportHeight = page.viewport().height;
-					let viewportIncr = 0;
-					while (viewportIncr + viewportHeight < height) {
-						await page.evaluate(_viewportHeight => {
-							window.scrollBy(0, _viewportHeight);
-						}, viewportHeight);
-						await wait(700);
-						viewportIncr = viewportIncr + viewportHeight;
-					}
-
-					// Scroll back to top
-					await page.evaluate(_ => {
-						window.scrollTo(0, 0);
-					});
-
-					// Some extra delay to let images load
-					await wait(1000);
-
-
-					await page.evaluate(_ => {
-						window.scrollTo(0, 0);
-					});
-
-				} catch (e) {
-					console.error('\n Error: scrollToBottom\n', e);
+				if (autoScroll) {
+					await scrollPage(page);
 				}
 
-			}
-
-			if (click) {
-				for (selector in click) {
-					try {
-						await page.click(click[selector]);
-					} catch (e) {
-						console.error('\n Error: page.click\n', e);
+				if (click) {
+					for (const selector of click) {
+						await page.click(selector);
 					}
 				}
-			}
-			if (waitFor) {
-				try {
+
+				if (waitFor) {
 					await page.waitFor(waitFor);
-				} catch (e) {
-					console.error('\n Error: page.waitFor\n', e);
+				}
+
+				await page.screenshot({ path: filePath, fullPage: true });
+
+				if (logLevel === 2) {
+					log(`Saved screenshot: ${filePath}`);
+				} else if (logLevel === 1) {
+					endLogRow(`Saved: ${filePath}`, '✔');
 				}
 			}
 
-			try {
-				await page.mouse.move(0, 0);
-			} catch (e) {
-				console.error('\n Error: page.mouse.move\n', e);
-			}
-
-			mkdir(deviceFolder);
-			try {
-				await page.screenshot({
-					path: file,
-					fullPage: true,
-					captureBeyondViewport: true
-				});
-			} catch (e) {
-				console.error('\n Error: page.screenshot\n', e);
-			}
-
-			if (logLevel == 2) {
-				log('IMG:\t' + file);
-			}
-
-			if (logLevel == 1) {
-				endLogRow(now + '\t' + fullUrl + '\t' + file, lineCount);
-			}
-
-		}
-
-		try {
 			await browser.close();
-		} catch (e) {
-			console.log('\n Error: browser.close\n', e);
+		} catch (error) {
+			console.error(`Error capturing screenshot for ${fullUrl}:`, error);
 		}
 	}
 
+	if (logLevel === 2) {
+		log(`Screenshot capture completed in folder: ${screenshotsFolder}`);
+	}
+};
 
-	if (logLevel == 2) {
-		var timeDiff = ((new Date()) - startTime) / 1000;
-		banner('Proccess finished. Elapsed time: ' + toHHMMSS(timeDiff));
-		log('Files saved at: ' + screenshotsFolder + '\n')
+const scrollPage = async (page) => {
+	const bodyHandle = await page.$('body');
+	const { height } = await bodyHandle.boundingBox();
+	await bodyHandle.dispose();
+
+	const viewportHeight = page.viewport().height;
+	let viewportIncr = 0;
+
+	while (viewportIncr + viewportHeight < height) {
+		await page.evaluate((vh) => window.scrollBy(0, vh), viewportHeight);
+		await new Promise((resolve) => setTimeout(resolve, 700));
+		viewportIncr += viewportHeight;
 	}
 
-}
+	await page.evaluate(() => window.scrollTo(0, 0));
+	await new Promise((resolve) => setTimeout(resolve, 1000));
+};
 
 const sections = [
 	{
-		header: 'Master of Puppets Screnshot',
-		content: 'Generates screenshots from a page list using Puppeteer and Chromium.'
+		header: 'Master of Puppets Screenshot',
+		content: 'Generates screenshots from a page list using Puppeteer and Chromium.',
 	},
 	{
 		header: 'Synopsis',
 		content: [
-			'$ node screenshot <options>\n',
-			'$ node screenshot {italic --help}\n',
-			'$ node screenshot {italic --loglevel 1} {italic --headless false} {italic --pages anotherfile.json} {italic --domain http://www.myanotherdomain.com} {italic --auth myuser:MyP4ssw0rd}\n',
-			'$ node screenshot {italic -l 1} {italic -h false} {italic -p anotherfile.json} {italic -d http://www.myanotherdomain.com} {italic -a myuser:MyP4ssw0rd}'
-		]
+			'$ node screenshot <options>',
+			'$ node screenshot --help',
+			'$ node screenshot --loglevel 1 --headless false --pages anotherfile.json --domain http://example.com --auth user:pass',
+		],
 	},
 	{
 		header: 'Options List',
 		optionList: [
-			{
-				name: 'help',
-				alias: 'h',
-				description: 'Print out helpful information.'
-			},
-			{
-				name: 'loglevel',
-				alias: 'l',
-				typeLabel: '{underline Number}',
-				description: 'Log level. {italic Default 0}\n0=Silent, 1=Important only, 2=All.',
-				defaultOption: 0
-			},
-			{
-				name: 'domain',
-				alias: 'd',
-				typeLabel: '{underline String}',
-				description: 'Main domain to be tested. When set, it {underline OVERRIDES} the "domain" parameter from the {italic pages.json} file.'
-			},
-			{
-				name: 'auth',
-				alias: 'a',
-				typeLabel: '{underline String}:{underline String}',
-				description: '{underline username}:{underline password} for the http authentication. When set, it {underline OVERRIDES} the "authenticate" parameter from the {italic pages.json} file.'
-			},
-			{
-				name: 'headless',
-				alias: 'e',
-				typeLabel: '{underline Boolean}',
-				description: 'Set Puppeteer to run in the headless mode. When set, it {underline OVERRIDES} the "headless" parameter from the {italic setup.json} file.'
-			},
-			{
-				name: 'pages',
-				alias: 'p',
-				typeLabel: '{underline String}',
-				description: 'The path to the {italic pages.json} file. Default option uses {italic pages.json} from the root of the project.'
-			}
-		]
-	}
-]
-const usage = commandLineUsage(sections)
+			{ name: 'help', alias: 'h', description: 'Print out helpful information.' },
+			{ name: 'loglevel', alias: 'l', typeLabel: '{underline Number}', description: 'Log level. Default 0.\n0=Silent, 1=Important only, 2=All.', defaultOption: 0 },
+			{ name: 'domain', alias: 'd', typeLabel: '{underline String}', description: 'Main domain to be tested.' },
+			{ name: 'auth', alias: 'a', typeLabel: '{underline String}:{underline String}', description: 'HTTP authentication credentials.' },
+			{ name: 'headless', alias: 'e', typeLabel: '{underline Boolean}', description: 'Run Puppeteer in headless mode.' },
+			{ name: 'pages', alias: 'p', typeLabel: '{underline String}', description: 'Path to the pages.json file.' },
+		],
+	},
+];
 
+const usage = commandLineUsage(sections);
 const optionDefinitions = [
 	{ name: 'help', alias: 'h' },
 	{ name: 'loglevel', alias: 'l', type: Number },
 	{ name: 'domain', alias: 'd', type: String },
 	{ name: 'auth', alias: 'a', type: String },
 	{ name: 'headless', alias: 'e', type: String },
-	{ name: 'pages', alias: 'p', type: String }
-]
+	{ name: 'pages', alias: 'p', type: String },
+];
+
 const options = commandLineArgs(optionDefinitions);
 
-if (typeof (options.help) == 'object') {
+if (options.help) {
 	console.log(usage);
 } else {
-	init(options);
+	initialize(options);
 }
