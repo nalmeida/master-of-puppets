@@ -57,12 +57,8 @@ $ node screenshot.js
 ### Parameters
 
  - `screenshotsFolder` <[string]> Destination folder for the image files. _Default_ __```screenshots```__
- - `autoScroll` <[Boolean]> Option for Puppeteer to scroll automatically to the bottom of the page before screenshot. Useful for scroll incrementally through a page in order to deal with lazy loaded elements. Enhanced to work better with animations and long pages. _Default_ __```true```__
- - `waitForAnimations` <[Boolean]> Enable automatic detection and waiting for CSS animations and transitions to complete. _Default_ __```true```__
- - `animationTimeout` <[number]> Maximum time to wait for animations in milliseconds. _Default_ __```5000```__
- - `scrollStepDelay` <[number]> Delay between scroll steps in milliseconds when autoScroll is enabled. _Default_ __```800```__
- - `finalDelay` <[number]> Final delay before taking screenshot in milliseconds. _Default_ __```1000```__
- - `pages` <[string]> Path and file name of pages list. _Default_ __```pages.json```__
+ - `autoScroll` <[Boolean]> Option for Puppeteer to scroll automatically to the bottom of the page before screenshot. Useful for scroll incrementally through a page in order to deal with lazy loaded elements. It scrolls in 100px every 100ms until the bottom of the page. _Default_ __```true```__
+  - `pages` <[string]> Path and file name of pages list. _Default_ __```pages.json```__
   - `puppeteer` <[Object]> <[Puppeteer]> config object. _Default_:
   	- `launch` <[boolean]> Whether to use or not the headless mode. _Default_ __```true```__
   	- `emulate` <[Array]> Array of objects following the Puppeteer [`DeviceDescriptors.ts`](https://github.com/puppeteer/puppeteer/blob/main/src/common/DeviceDescriptors.ts) standards. In order to test different resolutions emulating the same browser, just add the width in the `name` parameter. E.g.: `"name": "Chrome 1024"`.
