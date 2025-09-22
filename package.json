@@ -1,29 +1,32 @@
 {
-  "name": "master-of-puppets",
-  "version": "1.1.0",
-  "description": "A set of tools for visual regression test for an entire website.",
-  "main": "screenshot.js",
-  "repository": "github:nalmeida/master-of-puppets",
-  "engines": {
-    "node": ">=14"
-  },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "Nicholas Almeida",
-  "license": "ISC",
-  "dependencies": {
-    "canvas": "^3.2.0",
-    "command-line-args": "^5.1.3",
-    "command-line-usage": "^6.1.1",
-    "filenamify": "4.3.0",
-    "mz": "^2.7.0",
-    "npm": "^11.6.0",
-    "ora": "^5.4.1",
-    "puppeteer": "^24.21.0",
-    "resemblejs": "^5.0.0",
-    "tar": ">=6.1.9",
-    "url-regex-safe": "^4.0.0"
-  }
+	"name": "master-of-puppets",
+	"version": "1.2.0",
+	"description": "A set of tools for visual regression test for an entire website.",
+	"main": "screenshot.js",
+	"repository": "github:nalmeida/master-of-puppets",
+	"engines": {
+		"node": ">=14"
+	},
+	"scripts": {
+		"serve:test": "http-server ./test-site -c-1"
+	},
+	"keywords": [],
+	"author": "Nicholas Almeida",
+	"license": "ISC",
+	"dependencies": {
+		"canvas": "^3.2.0",
+		"command-line-args": "^5.1.3",
+		"command-line-usage": "^6.1.1",
+		"filenamify": "4.3.0",
+		"mz": "^2.7.0",
+		"npm": "^11.6.0",
+		"ora": "^5.4.1",
+		"puppeteer": "^24.21.0",
+		"resemblejs": "^5.0.0",
+		"tar": ">=6.1.9",
+		"url-regex-safe": "^4.0.0"
+	},
+	"devDependencies": {
+		"http-server": "^14.1.1"
+	}
 }
