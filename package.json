@@ -8,7 +8,7 @@
 		"node": ">=14"
 	},
 	"scripts": {
-		"serve:test": "http-server ./test-site -c-1"
+		"serve:test": "http-server ./web -c-1"
 	},
 	"keywords": [],
 	"author": "Nicholas Almeida",
