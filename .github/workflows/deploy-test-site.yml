@@ -1,0 +1,24 @@
+name: Deploy Test Site
+
+on:
+  push:
+    branches: [ master ]
+    paths:
+      - '.github/workflows/deploy-test-site.yml'
+      - 'test-site/**'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: test-site
+          branch: gh-pages
