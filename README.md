@@ -7,14 +7,19 @@
 - [Install](#install)
 - [Taking screenshots](#taking-screenshots)
 	- [screenshot CLI Options](#screenshot-cli-options)
-	- [Config the __`setup.json`__](#config-the-__setupjson__)
+	- [Config the __`setup.json`__](#config-the-setupjson)
 		- [Parameters](#parameters)
 			- [Sample file:](#sample-file)
-	- [Config the __`pages.json`__](#config-the-__pagesjson__)
+	- [Config the __`pages.json`__](#config-the-pagesjson)
 		- [Parameters](#parameters-1)
 			- [Sample file:](#sample-file-1)
 - [Comparing screenshots](#comparing-screenshots)
 	- [compare CLI Options](#compare-cli-options)
+	- [Testing server](#testing-server)
+		- [Test Site Overview](#test-site-overview)
+		- [Accessing the Test Site](#accessing-the-test-site)
+		- [Local Development](#local-development)
+		- [Testing with the Screenshot Tool](#testing-with-the-screenshot-tool)
 
 # Install
 
@@ -52,8 +57,12 @@ $ node screenshot.js
 ### Parameters
 
  - `screenshotsFolder` <[string]> Destination folder for the image files. _Default_ __```screenshots```__
- - `autoScroll` <[Boolean]> Option for Puppeteer to scroll automatically to the bottom of the page before screenshot. Useful for scroll incrementally through a page in order to deal with lazy loaded elements. It scrolls in 100px every 100ms until the bottom of the page. _Default_ __```true```__
-  - `pages` <[string]> Path and file name of pages list. _Default_ __```pages.json```__
+ - `autoScroll` <[Boolean]> Option for Puppeteer to scroll automatically to the bottom of the page before screenshot. Useful for scroll incrementally through a page in order to deal with lazy loaded elements. Enhanced to work better with animations and long pages. _Default_ __```true```__
+ - `waitForAnimations` <[Boolean]> Enable automatic detection and waiting for CSS animations and transitions to complete. _Default_ __```true```__
+ - `animationTimeout` <[number]> Maximum time to wait for animations in milliseconds. _Default_ __```5000```__
+ - `scrollStepDelay` <[number]> Delay between scroll steps in milliseconds when autoScroll is enabled. _Default_ __```800```__
+ - `finalDelay` <[number]> Final delay before taking screenshot in milliseconds. _Default_ __```1000```__
+ - `pages` <[string]> Path and file name of pages list. _Default_ __```pages.json```__
   - `puppeteer` <[Object]> <[Puppeteer]> config object. _Default_:
   	- `launch` <[boolean]> Whether to use or not the headless mode. _Default_ __```true```__
   	- `emulate` <[Array]> Array of objects following the Puppeteer [`DeviceDescriptors.ts`](https://github.com/puppeteer/puppeteer/blob/main/src/common/DeviceDescriptors.ts) standards. In order to test different resolutions emulating the same browser, just add the width in the `name` parameter. E.g.: `"name": "Chrome 1024"`.
@@ -205,6 +214,69 @@ Options List
   -d, --dry-run           Compares the images without saving the diff files.
 ```
 
+## Testing server
+
+This project includes a sample test website that you can use to test the screenshot functionality and experiment with different scenarios.
+
+### Test Site Overview
+
+The test site is a responsive web application called "Booth" that includes:
+- **Modern UI elements** with CSS animations and transitions
+- **Responsive design** that works across different device sizes
+- **Long scrollable content** perfect for testing full-page screenshots
+- **Interactive elements** for testing click actions
+- **Lazy-loaded images** and fade-in animations
+- **Multiple sections** including hero, features, testimonials, and contact
+
+### Accessing the Test Site
+
+**Live Demo:** [https://nalmeida.github.io/master-of-puppets/test-site/](https://nalmeida.github.io/master-of-puppets/test-site/)
+
+### Local Development
+
+To run the test site locally:
+
+1. **Start a local server** from the project root:
+```bash
+npm run serve:test
+```
+
+2. **Access the test site** at:
+```
+http://localhost:8080/test-site/
+```
+
+### Testing with the Screenshot Tool
+
+To test the screenshot functionality with the included test site, update your `pages.json`:
+
+```json
+{
+    "domain": "https://nalmeida.github.io/master-of-puppets/test-site",
+    "authenticate": {
+        "username": null,
+        "password": null
+    },
+    "pages": [
+        { "url": "/" }
+    ]
+}
+```
+
+Or for local testing:
+
+```json
+{
+    "domain": "http://localhost:8080/test-site",
+    "authenticate": {
+        "username": null,
+        "password": null
+    },
+    "pages": [
+        { "url": "/" }
+    ]
+}
+```
 
 [Array]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array "Array"
 [boolean]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type "Boolean"
