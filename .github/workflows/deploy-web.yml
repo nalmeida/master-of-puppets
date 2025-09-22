@@ -1,11 +1,11 @@
-name: Deploy Test Site
+name: Deploy web
 
 on:
   push:
     branches: [ master ]
     paths:
-      - '.github/workflows/deploy-test-site.yml'
-      - 'test-site/**'
+      - '.github/workflows/deploy-web.yml'
+      - 'web/**'
 
 jobs:
   deploy:
@@ -20,5 +20,5 @@ jobs:
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          folder: test-site
+          folder: web
           branch: gh-pages
