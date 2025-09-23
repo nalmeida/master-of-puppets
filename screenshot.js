@@ -221,7 +221,6 @@ const captureScreenshots = async () => {
 			});
 
 			await page.evaluate(() => {
-				const originalRAF = window.requestAnimationFrame;
 				window.requestAnimationFrame = (callback) => {
 					callback(performance.now());
 					return 1; // Return a dummy ID
