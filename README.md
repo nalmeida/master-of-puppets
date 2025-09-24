@@ -49,6 +49,8 @@ $ node screenshot.js
                              "headless" parameter from the setup.json file.
   -p, --pages String         The path to the pages.json file. Default option uses pages.json from the root
                              of the project.
+  -s, --setup String        Path to the setup file. Default option uses setup.json from the root of the
+                             project.
 
 ```
 
@@ -208,6 +210,8 @@ Options List
   -b, --base String       Path to the folder used as the base for comparison.
   -c, --compare String    Path to the folder used for comparison against the base folder.
   -d, --dry-run           Compares the images without saving the diff files.
+  -s, --setup String      Path to the setup file. Default option uses setup.json from the root of the
+                          project.
 ```
 
 ## Testing server
