@@ -53,6 +53,15 @@ const minimal_args = [
 	'--password-store=basic',
 	'--use-gl=swiftshader',
 	'--use-mock-keychain',
+
+	'--disable-smooth-scrolling',
+	'--wm-window-animations-disabled',
+	'--animation-duration-scale=0',
+
+	// '--disable-gpu',
+	// '--disable-software-rasterizer',
+	// '--disable-2d-canvas-cache',
+	// '--disable-software-video-decoder',
 	// Removed --disable-web-security flag as it's a security risk
 ];
 
@@ -194,6 +203,30 @@ const captureScreenshots = async () => {
 				console.error('\n Error: page.goto\n', e);
 			}
 
+			await page.evaluate(() => {
+				const style = document.createElement('style');
+				style.innerHTML = `
+					* {
+						-webkit-transition-duration: 0s !important;
+						transition-duration: 0s !important;
+						-webkit-animation-duration: 0s !important;
+						animation-duration: 0s !important;
+					}
+					*[style*="position: sticky"], 
+					*[style*="position: fixed"] { 
+						position: relative !important; 
+					}
+				`;
+				document.head.appendChild(style);
+			});
+
+			await page.evaluate(() => {
+				window.requestAnimationFrame = (callback) => {
+					callback(performance.now());
+					return 1; // Return a dummy ID
+				};
+			});
+
 			if (autoScroll) {
 				try {
 
@@ -208,7 +241,7 @@ const captureScreenshots = async () => {
 						await page.evaluate(_viewportHeight => {
 							window.scrollBy(0, _viewportHeight);
 						}, viewportHeight);
-						await wait(700);
+						await wait(200);
 						viewportIncr = viewportIncr + viewportHeight;
 					}
 
@@ -218,12 +251,7 @@ const captureScreenshots = async () => {
 					});
 
 					// Some extra delay to let images load
-					await wait(1000);
-
-
-					await page.evaluate(_ => {
-						window.scrollTo(0, 0);
-					});
+					await wait(300);
 
 				} catch (e) {
 					console.error('\n Error: scrollToBottom\n', e);
