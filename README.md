@@ -7,10 +7,10 @@
 - [Install](#install)
 - [Taking screenshots](#taking-screenshots)
 	- [screenshot CLI Options](#screenshot-cli-options)
-	- [Config the __`setup.json`__](#config-the-__setupjson__)
+	- [Config the __`setup.json`__](#config-the-setupjson)
 		- [Parameters](#parameters)
 			- [Sample file:](#sample-file)
-	- [Config the __`pages.json`__](#config-the-__pagesjson__)
+	- [Config the __`pages.json`__](#config-the-pagesjson)
 		- [Parameters](#parameters-1)
 			- [Sample file:](#sample-file-1)
 - [Comparing screenshots](#comparing-screenshots)
@@ -44,6 +44,8 @@ $ node screenshot.js
                              "headless" parameter from the setup.json file.
   -p, --pages String         The path to the pages.json file. Default option uses pages.json from the root
                              of the project.
+  -s, --setup String        Path to the setup file. Default option uses setup.json from the root of the
+                             project.
 
 ```
 
@@ -203,6 +205,8 @@ Options List
   -b, --base String       Path to the folder used as the base for comparison.
   -c, --compare String    Path to the folder used for comparison against the base folder.
   -d, --dry-run           Compares the images without saving the diff files.
+  -s, --setup String      Path to the setup file. Default option uses setup.json from the root of the
+                          project.
 ```
 
 

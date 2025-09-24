@@ -5,12 +5,12 @@ const compareImages = require("resemblejs/compareImages");
 var path = require("path");
 const fs = require("mz/fs");
 const util = require('./util.js');
-	const log = util.log;
-	const readJSON = util.readJSON;
-	const mkdir = util.mkdir;
-	const rm = util.rm;
-	const addSlash = util.addSlash;
-	const getRecursiveFileList = util.getRecursiveFileList;
+const log = util.log;
+const readJSON = util.readJSON;
+const mkdir = util.mkdir;
+const rm = util.rm;
+const addSlash = util.addSlash;
+const getRecursiveFileList = util.getRecursiveFileList;
 
 var setup;
 var logLevel;
@@ -20,22 +20,22 @@ var compareFolder;
 var dryRun;
 var resembleOptions;
 
-const init = function(commandLineObject) {
+const init = function (commandLineObject) {
 
 	util.logLevel = logLevel = !isNaN(commandLineObject.loglevel) ? commandLineObject.loglevel : 0;
 	setup = readJSON('setup.json');
-		diffFolder = setup.diffFolder;
-		resembleOptions = setup.resembleOptions;
+	diffFolder = setup.diffFolder;
+	resembleOptions = setup.resembleOptions;
 
-	dryRun = typeof(commandLineObject['dry-run']) == 'object' ?  true : false;
+	dryRun = typeof (commandLineObject['dry-run']) == 'object' ? true : false;
 
 	baseFolder = path.resolve(addSlash(commandLineObject.base));
 	compareFolder = path.resolve(addSlash(commandLineObject.compare));
 
 	var fullBaseList = (getRecursiveFileList(addSlash(commandLineObject.base)))
 	// var fullCompareList = (getRecursiveFileList(addSlash(commandLineObject.compare)))
-	
-	if(dryRun === false) {
+
+	if (dryRun === false) {
 		rm(diffFolder);
 		mkdir(diffFolder);
 	}
@@ -52,32 +52,32 @@ async function getDiff(fullBaseList) {
 
 	var destinationFolder = addSlash(diffFolder);
 
-	for (var i=0; i<fullBaseList.length; i++) {
+	for (var i = 0; i < fullBaseList.length; i++) {
 
 		var baseFilePath = path.resolve(fullBaseList[i]);
 		var compareFilePath = baseFilePath.replace(baseFolder, compareFolder);
 
 		var fileName = baseFilePath.split('/').slice(-1).toString();
-		var resFolder = baseFilePath.split('/').slice(-2,-1).toString();
+		var resFolder = baseFilePath.split('/').slice(-2, -1).toString();
 		var options = resembleOptions;
 		var fileA = fileB = null;
 
 		try {
 			fileA = await fs.readFile(baseFilePath);
-		} catch(e) {
+		} catch (e) {
 			console.error('\n Error: fileA fs.readFile\n', e);
 		}
 
 		try {
 			fileB = await fs.readFile(compareFilePath);
-		} catch(e) {
+		} catch (e) {
 			console.error('\n Error: fileB fs.readFile\n', e);
 		}
 
 		// console.log(Boolean(fileB) + ' ' + baseFilePath + ' → ' + compareFilePath + '\n')
 
-		if(!Boolean(fileB)) {
-			if(logLevel > 0 || dryRun) {
+		if (!Boolean(fileB)) {
+			if (logLevel > 0 || dryRun) {
 				log(baseFilePath + '\t ONLY AT BASE');
 			}
 			continue;
@@ -89,29 +89,29 @@ async function getDiff(fullBaseList) {
 				fileB,
 				options
 			);
-		} catch(e) {
+		} catch (e) {
 			console.error('\n Error: compareImages\n', e);
 		}
 
 		var diffFile = addSlash(destinationFolder) + addSlash(resFolder) + fileName;
 
-		if(logLevel > 0 || dryRun) {
-			log(diffFile + '\t' + (Number(data.misMatchPercentage) / 100).toString().replace('.',','));
+		if (logLevel > 0 || dryRun) {
+			log(diffFile + '\t' + (Number(data.misMatchPercentage) / 100).toString().replace('.', ','));
 		}
 
-		if(dryRun === false) {
+		if (dryRun === false) {
 			mkdir(destinationFolder);
 			mkdir(addSlash(destinationFolder) + addSlash(resFolder))
 
 			try {
 				await fs.writeFile(diffFile, data.getBuffer());
-			} catch(e) {
+			} catch (e) {
 				console.error('\n Error: fs.writeFile\n', e);
 			}
 		}
 
 	}
-	
+
 }
 
 const sections = [
@@ -159,6 +159,13 @@ const sections = [
 				name: 'dry-run',
 				alias: 'd',
 				description: 'Compares the images without saving the diff files.'
+			},
+			{
+				name: 'setup',
+				alias: 's',
+				typeLabel: '{italic String}',
+				description: 'Path to the setup file in JSON format.',
+				defaultOption: 'setup.json'
 			}
 		]
 	}
@@ -167,14 +174,19 @@ const usage = commandLineUsage(sections)
 
 const optionDefinitions = [
 	{ name: 'help', alias: 'h' },
+	{ name: 'base', alias: 'b', type: String },
+	{ name: 'compare', alias: 'c', type: String },
 	{ name: 'loglevel', alias: 'l', type: Number },
-	{ name: 'base', alias: 'b', type: String},
-	{ name: 'compare', alias: 'c', type: String},
-	{ name: 'dry-run', alias: 'd'}
-]
+	{ name: 'setup', alias: 's', type: String },
+	{ name: 'dry-run', alias: 'd' }
+];
+
 const options = commandLineArgs(optionDefinitions);
 
-if(typeof(options.help) == 'object') {
+const setupFile = options.setup || 'setup.json'; // Default to setup.json if not provided
+setup = readJSON(setupFile);
+
+if (typeof (options.help) == 'object') {
 	console.log(usage);
 } else {
 	init(options);

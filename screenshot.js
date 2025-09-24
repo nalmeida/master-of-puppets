@@ -85,7 +85,7 @@ var init = function (commandLineObject) {
 
 	util.logLevel = logLevel = !isNaN(commandLineObject.loglevel) ? commandLineObject.loglevel : 0;
 
-	var setupFile = 'setup.json';
+	var setupFile = commandLineObject.setup || 'setup.json';
 	domainConfig = commandLineObject.domain || undefined;
 	headlessConfig = commandLineObject.headless || undefined;
 	authConfig = commandLineObject.auth || undefined;
@@ -371,6 +371,12 @@ const sections = [
 				alias: 'p',
 				typeLabel: '{underline String}',
 				description: 'The path to the {italic pages.json} file. Default option uses {italic pages.json} from the root of the project.'
+			},
+			{
+				name: 'setup',
+				alias: 's',
+				typeLabel: '{underline String}',
+				description: 'The path to the {italic setup.json} file. Default option uses {italic setup.json} from the root of the project.'
 			}
 		]
 	}
@@ -383,7 +389,8 @@ const optionDefinitions = [
 	{ name: 'domain', alias: 'd', type: String },
 	{ name: 'auth', alias: 'a', type: String },
 	{ name: 'headless', alias: 'e', type: String },
-	{ name: 'pages', alias: 'p', type: String }
+	{ name: 'pages', alias: 'p', type: String },
+	{ name: 'setup', alias: 's', type: String }
 ]
 const options = commandLineArgs(optionDefinitions);
 
