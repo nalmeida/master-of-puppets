@@ -1,6 +1,6 @@
 {
 	"name": "master-of-puppets",
-	"version": "1.4.0",
+	"version": "1.4.1",
 	"description": "A set of tools for visual regression test for an entire website.",
 	"main": "screenshot.js",
 	"repository": "github:nalmeida/master-of-puppets",
