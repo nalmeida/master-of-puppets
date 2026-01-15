@@ -20,7 +20,7 @@
 		"command-line-usage": "^6.1.1",
 		"filenamify": "4.3.0",
 		"mz": "^2.7.0",
-		"npm": "^11.6.0",
+		"npm": "^11.7.0",
 		"ora": "^5.4.1",
 		"puppeteer": "^24.21.0",
 		"resemblejs": "^5.0.0",
