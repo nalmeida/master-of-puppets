@@ -24,7 +24,7 @@
 		"ora": "^5.4.1",
 		"puppeteer": "^24.21.0",
 		"resemblejs": "^5.0.0",
-		"tar": ">=6.1.9",
+		"tar": ">=7.5.11",
 		"url-regex-safe": "^4.0.0"
 	},
 	"devDependencies": {
